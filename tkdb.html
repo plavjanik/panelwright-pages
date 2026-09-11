@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TKDB — a relational database for MVS 3.8j</title>
+<meta name="description" content="MVS 3.8j predates DB2 by two years and has never had a relational database. TKDB is one: SQL, a self-describing catalog, transactions, row locks, DB2's own SQLCODEs — in 2,051 lines of REXX. And a rejected idea, SQLite compiled onto the same system, came back and now runs too.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+<style type="text/css">:root{--bg:#f5f6f3;--bg2:#eceee9;--ink:#1b1f1c;--ink2:#464c48;--mute:#737a75;--line:#d3d7d1;--accent:#2f8f5b;--human:#c98a1b;--code:#e6e9e3}
+@media (prefers-color-scheme: dark){:root{--bg:#131614;--bg2:#1a1f1b;--ink:#e6e9e4;--ink2:#b6bcb6;--mute:#8a918b;--line:#2c332e;--accent:#3ea86b;--human:#c4861c;--code:#202622}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.pw-top{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:14px 20px;border-bottom:1px solid var(--line)}
+.pw-top a{color:var(--mute);text-decoration:none}
+.pw-top a:hover{color:var(--ink)}
+main,body>header,body>p,body>h1,body>h2,body>h3,body>ul,body>ol,body>table,body>pre,body>figure,body>hr,body>blockquote,body>div{max-width:820px;margin-left:auto;margin-right:auto}
+body>*{padding-left:20px;padding-right:20px}
+body>div.sourceCode{margin-left:auto;margin-right:auto}
+body>.pw-top{max-width:none;padding-left:20px}
+h1,h2,h3{font-family:"IBM Plex Serif",Georgia,"Times New Roman",serif;font-weight:500;line-height:1.15;text-wrap:balance}
+h1{font-size:2.6rem;letter-spacing:-.02em;margin:2.4rem auto .5rem}
+h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+h2{font-size:1.8rem;margin:2.8rem auto .8rem;padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+h3{font-size:1.2rem;font-weight:600;margin:1.8rem auto .5rem}
+.lede{font-size:1.1rem;color:var(--ink2);margin:1rem auto 1.6rem}
+p,ul,ol{margin:0 auto 1.1rem}
+li{margin:.3rem 0}
+a{color:var(--accent);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent)}
+hr{border:0;border-top:1px solid var(--line);margin:2.2rem auto}
+img,svg{max-width:100%;height:auto;display:block;margin:0 auto;border-radius:6px;box-shadow:0 1px 2px rgba(20,30,24,.08),0 10px 28px rgba(20,30,24,.07)}
+@media (prefers-color-scheme: dark){img,svg{box-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35)}}
+figure{margin:1.6rem auto}
+figcaption{font-size:.85rem;color:var(--mute);text-align:left;margin-top:.6rem;line-height:1.45}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;margin:1.4rem auto}
+.gallery figure{margin:0}
+pre{background:var(--code);border:1px solid var(--line);border-radius:4px;padding:.9rem 1rem;overflow-x:auto;font-size:.85rem;line-height:1.45;margin:1rem auto}
+pre.mermaid{background:transparent;border:0;overflow-x:auto;padding:0}
+code{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:var(--code);border-radius:3px;padding:.05em .35em}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:1rem auto;display:block;overflow-x:auto}
+th,td{border-bottom:1px solid var(--line);padding:.5rem .6rem .5rem 0;text-align:left;vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);font-weight:600}
+blockquote{border-left:3px solid var(--accent);margin:1.4rem auto;padding:.2rem 0 .2rem 1rem;color:var(--ink2)}
+.turn{border-left:3px solid var(--line);margin:1.6rem auto;padding:.1rem 0 .1rem 1.1rem}
+.turn .d{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-bottom:.3rem}
+.turn.rejected{border-left-color:var(--human)}
+.turn.shipped{border-left-color:var(--accent)}
+.pw-foot{max-width:820px;margin:3rem auto 4rem;padding:1.4rem 20px 0;border-top:1px solid var(--line);font-size:.84rem;color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="pw-top"><a href="index.html">Panelwright</a> · TKDB</div>
+
+<h1>TKDB — a relational database for a system that never had one</h1>
+<p class="lede">MVS 3.8j is IBM's last mainframe operating system placed in the public
+domain, frozen in 1981. IBM announced DB2 two years later. In the forty-five
+years since, nobody has written a relational database for this specific,
+free, still-runnable release of MVS — until now. TKDB is SQL, a
+self-describing system catalog, transactions, row locks, DB2's own
+<code>SQLCODE</code>s and message text verbatim, a SPUFI-style batch path
+and a DB2I-style full-screen front end, in 2,051 lines of REXX over a VSAM
+file. It ships pre-installed in the <code>panelwright/tk5plus</code> test
+image, and every screenshot on this page is a live capture — nothing here
+is mocked or hand-drawn.</p>
+
+<p>This page has two halves. The first is a tour of TKDB as it stands: what
+it does, and what it looks like on a real 3270 screen. The second is a
+story about being wrong in public — a design decision this project
+recorded as <em>rejected</em>, in writing, with thirty jobs of evidence
+behind it, that turned out six days later to be reversible, and is now a
+second working database engine shipping on the same image.</p>
+
+<h2>What it actually does</h2>
+<table>
+<tr><th>Real SQL</th><td><code>CREATE</code>/<code>DROP TABLE</code>, multi-row
+<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>,
+<code>SELECT</code> with <code>WHERE</code>, <code>ORDER BY</code>,
+<code>COUNT(*)</code>, <code>FETCH FIRST n ROWS ONLY</code>,
+<code>LIKE</code>, <code>IS NULL</code>, <code>AND</code>/<code>OR</code>/<code>NOT</code>.</td></tr>
+<tr><th>A self-describing catalog</th><td><code>SYSIBM.SYSTABLES</code> and
+<code>SYSIBM.SYSCOLUMNS</code> are ordinary queryable tables that describe
+themselves — and refuse a write with DB2's own <code>-607</code>.</td></tr>
+<tr><th>Transactions</th><td><code>COMMIT</code> and <code>ROLLBACK</code>,
+with SPUFI's own end-of-input rule: <code>AUTOCOMMIT(YES)</code> commits
+only if every statement in the run succeeded.</td></tr>
+<tr><th>Row locking</th><td>A changed row is held until its owner commits;
+a second thread updating it waits, then gets DB2's own
+<code>-911</code> or <code>-913</code> on a lock timeout.</td></tr>
+<tr><th>DB2's diagnostics, verbatim</th><td><code>DSNT408I SQLCODE = -803</code>
+with the duplicate key in hex, <code>DSNE610I NUMBER OF ROWS DISPLAYED IS
+2</code> — not an invented message vocabulary, the real one, so anyone who
+has ever used DB2 already knows how to read a TKDB error.</td></tr>
+<tr><th>Three front doors</th><td>A batch command, a full-screen DB2I-style
+application, and a resident server other address spaces talk to
+concurrently.</td></tr>
+</table>
+
+<h2>A tour of the front end</h2>
+<p>TKDB opens from TSO READY as a DB2I-style primary option menu — the
+classic IBM database-administrator screen shape, reproduced on an
+operating system DB2 itself never ran on.</p>
+<figure><img src="assets/tkdb/menu.svg" alt="The TKDB primary option menu, offering SPUFI, QUERY, CATALOG and UTILITIES">
+<figcaption>The primary option menu: SPUFI, QUERY, CATALOG, UTILITIES — DB2's own shape.</figcaption></figure>
+
+<p>Option 3 browses the catalog. Enter with the table name left blank and
+every table lists; the two <code>SYSIBM</code> rows are the catalog
+describing itself, which is the first thing anyone points a SQL client at
+a database expects to be able to do.</p>
+<div class="gallery">
+<figure><img src="assets/tkdb/catalog-systables.svg" alt="The TKDB catalog listing SYSIBM.SYSTABLES and user tables"><figcaption>SYSIBM.SYSTABLES listing every table, itself included.</figcaption></figure>
+<figure><img src="assets/tkdb/catalog-syscolumns.svg" alt="SYSIBM.SYSCOLUMNS for the EMP table, showing type, length, scale and nullability"><figcaption>Name a table and get its columns — type, length, scale, key position.</figcaption></figure>
+</div>
+
+<p>Option 2 runs one statement typed across three 68-character lines, joined
+in order, with the result in a scrollable grid:</p>
+<div class="gallery">
+<figure><img src="assets/tkdb/query-panel.svg" alt="The TKDB QUERY panel with a two-line SELECT statement entered"><figcaption>A two-line SELECT, entered across the panel's continuation lines.</figcaption></figure>
+<figure><img src="assets/tkdb/query-result.svg" alt="The result of the SELECT, a grid of rows ordered by SALARY descending"><figcaption>The result, ordered by SALARY descending.</figcaption></figure>
+</div>
+
+<p>Option 1 is SPUFI — "SQL Processor Using File Input" — DB2's own batch
+loop: name an input data set of SQL and an output data set for the report,
+then <em>edit → execute → browse</em> as one cycle. Each step is a
+YES/NO, and the panel comes back filled in, so a revision runs again
+without retyping anything, exactly as real SPUFI does.</p>
+<div class="gallery">
+<figure><img src="assets/tkdb/spufi-panel.svg" alt="The TKDB SPUFI panel with input and output data sets named and the YES/NO execution steps"><figcaption>SPUFI: edit, execute, browse — each a YES/NO, DB2's own loop.</figcaption></figure>
+<figure><img src="assets/tkdb/spufi-report.svg" alt="A SPUFI report page showing a successful SELECT followed by a -803 duplicate-key error"><figcaption>The report, down to the hex index key in a real -803.</figcaption></figure>
+</div>
+
+<p>Reports are 132 columns wide on an 80-column screen, so the browser
+scrolls and shifts sideways. Errors land on the panel's own message line,
+in red — and honestly, as an error, not silently swallowed:</p>
+<figure><img src="assets/tkdb/menu-error.svg" alt="The primary menu showing message TKDB001E for an invalid option"><figcaption>An invalid option answered with its own message id, TKDB001E.</figcaption></figure>
+
+<p><strong>No panel executes SQL.</strong> Every one of them writes a work
+member, calls the engine, and browses the report the engine wrote — so the
+interactive screens and the batch command can never disagree about what a
+statement does. That single-call-site rule is what made everything in the
+next section possible without touching six other places at once.</p>
+
+<h2>We wrote down "rejected." We were wrong.</h2>
+<p>Every application added to the TK5 test image earns its place by
+painting a screen shape the stock system never does. A DB2-like
+application is unusually rich that way — which is why, when the idea was
+first floated, the obvious question was whether TKDB could be something
+better than a REXX imitation of a database: <em>the real SQLite, actually
+compiled for MVS 3.8j.</em> Real joins, real indexes, a real query
+planner, for the cost of a build.</p>
+
+<div class="turn rejected">
+<div class="d">2026-09-04 — REJECTED</div>
+<p>Thirty live jobs answered the question. TK5 does ship a real C compiler
+(GCCMVS), and it compiles real SQLite source — up to 21,637 lines of it,
+clean. But the full amalgamation is 270,126 lines in one file, and MVS
+3.8j's address space is 24-bit: the compile abended <strong>S878</strong>
+— out of virtual storage — at 7,764K, even with the region set to take
+everything available. A 40,039-line probe died differently, inside the
+compiler itself. Splitting the file into smaller pieces looked like the
+fix, except the compiler truncates every external name to eight
+uppercase characters, which collapses every <code>sqlite3_*</code>
+function to the same eight letters. And S/370 doesn't even store
+floating point the way SQLite's file format assumes. Four separate walls,
+each real. The verdict went into the design record in writing: <strong>path
+B is rejected; path A is the plan.</strong> "Path A" — TKDB as it exists
+today — is 2,051 lines of hand-written REXX over a VSAM file, and it shipped
+five days later.</p>
+</div>
+
+<p>That was the right call with the evidence available, and REXX genuinely
+works — it's what every screenshot above is running. But five days after
+TKDB shipped, the question came back, framed differently: what if the
+compile itself didn't have to happen on the mainframe at all?</p>
+
+<div class="turn">
+<div class="d">2026-09-09 — reopened</div>
+<p>A cross-compiler moves the compile step to an ordinary Linux machine and
+leaves only assembly and linking for MVS 3.8j to do. Under an hour, no
+mainframe involved: <strong>the entire 270,126-line amalgamation
+compiled as one unit</strong>, no splitting needed. Every one of D3's four
+grounds was re-checked against that result, and three of them turned out
+to describe the wrong thing. The address-space wall wasn't SQLite's —
+it was the compiler's own footprint, and moving the compile off-host
+made it vanish. The symbol-truncation problem was moot, because a single
+compiled unit needs no splitting and exposes only 23 external names, none
+colliding. And the size ceiling that killed the 40,039-line probe wasn't
+a ceiling at all — it was one specific compiler bug, and it had a name:
+every 64-bit <em>addition</em> crashed the code generator, in every form
+tried. The pattern responsible, and its subtraction counterpart, sat in
+the compiler's own source file — with the subtraction version already
+disabled by a comment left by whoever wrote it, decades ago. One deleted
+table entry, and the compiler could synthesize the add from smaller
+pieces instead of crashing on it.</p>
+</div>
+
+<p>A compile is not a program. The assembler still had to swallow a quarter
+of a million lines of generated S/370 assembly, and it refused — not for
+lack of memory this time, but because Assembler XF ran out of room for
+its own symbol table, 25,356 entries in. The obvious fix, trimming
+features to cut the symbol count, was tried across seven jobs and cut the
+count by nearly a third. <strong>It changed nothing.</strong> The
+measurement that mattered was subtler: two builds with wildly different
+symbol counts both passed, and two others with similar counts didn't —
+which meant symbols were the wrong thing to be counting. The real limit
+was <em>literal pools</em>: the compiler emits one per function, and with
+1,789 functions in the file, that's 3,653 separate pools for the
+assembler to track — not the 25,000 symbols everyone had been staring at.</p>
+
+<div class="turn shipped">
+<div class="d">2026-09-10 — it compiles clean, links, and runs</div>
+<p>Grouping adjacent functions' literals into shared pools brought the
+count from 3,653 down to 420. The result: <strong>zero assembly
+diagnostics, a linked executable module, and a program that runs on
+tk5dev.</strong> <code>sqlite3_open()</code> returns 0 — the storage layer
+this project wrote for it, standing in for a filesystem the mainframe
+doesn't have, works. One thing didn't: every SQL statement, even
+<code>CREATE TABLE</code>, failed with the keyword quoted back correctly
+but rejected as unrecognized — meaning the tokenizer worked and keyword
+<em>lookup</em> didn't. Four plausible causes were ruled out by reading
+the source, and none of them were it. What found the real one was a
+second, sneakier instance of the exact same class of bug already fixed
+once: keyword lookup does its hashing in 64-bit arithmetic, and this
+compiler's 64-bit support had already been caught corrupting one
+operation — narrowing that one computation to a 32-bit integer, safe
+because the numbers involved are all tiny, made every keyword resolve.
+<strong>SQLite parses and executes real SQL, on real MVS 3.8j</strong> —
+something that, as far as this project has found, nobody had ever
+gotten to run there before.</p>
+</div>
+
+<p>Getting SQLite to run once, on a database that vanished when the job
+ended, isn't a backend. Two more steps made it one: the running database
+image is now read whole from a single ordinary MVS data set before the
+first statement and written back after the last, proven across separate
+job steps that see each other's committed changes; and the DB2I front end
+above gained a second engine choice sitting right next to REXX, driven
+through the exact same "write a work member, run the engine, browse the
+report" contract that already kept the panels honest. The same SPUFI
+screen a person is looking at when they pick <code>Edit input</code> now
+runs against either engine, chosen at logon.</p>
+
+<pre class="mermaid">
+flowchart LR
+  FE["DB2I front end<br/>SPUFI · QUERY · CATALOG<br/>(unchanged either way)"]
+  FE -- "BACKEND REXX" --> R["REXX engine<br/>2,051 lines · built 2026-09-04"]
+  FE -- "BACKEND SQLITE" --> S["Real SQLite<br/>744 KB load module · runs 2026-09-10"]
+  R --> KSDS[("VSAM KSDS<br/>one row per record")]
+  S --> DB[("One flat data set<br/>read whole, written back on close")]
+</pre>
+
+<p><strong>REXX stays the default</strong>, and that isn't the old verdict
+reasserting itself — it's the honest one. The two engines share a
+contract, not a dialect: SQLite doesn't yet understand DB2's
+<code>DECIMAL</code> money type or the <code>SYSIBM</code> catalog TKDB's
+own panels read directly, so it can't yet run the sample data the whole
+application is built around. Whether it ever can is a real, open,
+measured question — not a foreclosed one, which by itself is the whole
+point of writing this section.</p>
+
+<h2>How it's put together</h2>
+<p>One record per row in a VSAM key-sequenced file. The first sixteen bytes
+of every record <em>are</em> its key — a four-character table id followed
+by a twelve-digit row id — so a table scan is a positioned read on the
+table-id prefix, reading forward until it changes. A whole live
+transaction lives in memory: <code>COMMIT</code> writes the changed rows
+back, <code>ROLLBACK</code> just drops them, which is what lets a full
+write-heavy test run leave the underlying file provably byte-identical
+afterward.</p>
+<p>Three front doors share one engine: <code>TKDBSQL</code> as a batch
+command, the DB2I panels above, and a resident server address space,
+<code>TKDBMSTR</code>, that other jobs and started tasks talk to through a
+small dataset-backed mailbox — request records in, reply records out, a
+heartbeat record standing in for "is the server even running" the way a
+real anchor block would elsewhere. Each connected client gets its own
+working set, parked and restored on every turn, so one client's
+uncommitted work stays invisible to everyone else, and a client that goes
+silent has its work rolled back automatically.</p>
+
+<h2>Why it exists</h2>
+<p>Every application on the <code>tk5plus</code> test image earns its place
+by painting a screen shape the stock system never does, which then
+exercises code no hermetic test suite can reach: a scrollable result grid,
+a multi-line free-form SQL entry field, a catalog browse with genuinely
+repeated column-name labels, a full DB2I-style menu-to-SPUFI-to-browse
+navigation chain, and a message line carrying real DB2 diagnostic text.
+It's also the most natural demonstration of an AI agent driving a
+mainframe that this project has: upload a SQL script, run it through
+SPUFI, download the results — which is what a real DB2 shop's automation
+already looks like, done here against a system DB2 was never installed
+on. <strong>TKDB was built entirely through Panelwright itself</strong> —
+every source upload, JCL submission, and panel keystroke, on both engines,
+went through the same CLI this project ships.</p>
+
+<h2>Try it</h2>
+<p>TKDB ships pre-installed in the <code>panelwright/tk5plus</code> Docker
+image, so a fresh container starts with the engine, both front-end panels,
+the sample schema and the sample JCL already in place — no setup:</p>
+<pre><code>docker build -t panelwright/tk5 docker/tk5
+docker build -t panelwright/tk5plus docker/tk5plus
+docker run -d --name tk5dev --privileged -p 3270:3270 -p 8038:8038 panelwright/tk5plus</code></pre>
+<p>Then, from TSO READY as HERC02: <code>RX 'HERC02.TKDB.EXEC(TKDB)'</code>.
+The full build, run, and source layout is
+<a href="https://github.com/plavjanik/panelwright/blob/main/docker/tk5plus/README.md">docker/tk5plus/README.md</a>;
+the design record behind every decision and measurement on this page —
+D1 through D35 — is
+<a href="https://github.com/plavjanik/panelwright/blob/main/docs/design/tkdb-design.md">docs/design/tkdb-design.md</a>.</p>
+
+<div class="pw-foot">TKDB is tracked as PW-238 in Panelwright's backlog; the SQLite reversal is PW-349–352. Other pages: <a href="intro.html">Introduction</a>, <a href="why.html">Why Panelwright</a>, <a href="making-of.html">The Making of Panelwright</a>, <a href="gibson.html">A tour of GIBSON</a>.</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"});</script>
+</body>
+</html>
