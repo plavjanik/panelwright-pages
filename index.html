@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panelwright</title>
+<meta name="description" content="Playwright for the IBM 3270 terminal. Published pages: the introduction, the case for an emulator in VS Code, and how the tool was built with AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f5f6f3;--bg2:#eceee9;--ink:#1b1f1c;--ink2:#464c48;--mute:#737a75;--line:#d3d7d1;--agent:#2f8f5b;--human:#c98a1b;--screen:#0c1711;--phos:#7fdc9c;--phos2:#4f9d6c;--shadow:0 1px 2px rgba(20,30,24,.08),0 10px 28px rgba(20,30,24,.07)}
+@media (prefers-color-scheme: dark){:root{--bg:#131614;--bg2:#1a1f1b;--ink:#e6e9e4;--ink2:#b6bcb6;--mute:#8a918b;--line:#2c332e;--agent:#3ea86b;--human:#c4861c;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink2)}
+:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{padding:64px 0 28px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 .9rem}
+h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;font-size:clamp(2.4rem,5vw,3.6rem);letter-spacing:-.02em;line-height:1.1;margin:0;text-wrap:balance}
+h1 em{font-style:italic;font-weight:400;color:var(--agent)}
+.lede{font-size:1.15rem;color:var(--ink2);max-width:62ch;margin:1.1rem 0 0}
+.scr{background:var(--screen);color:var(--phos);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.8rem;line-height:1.45;padding:14px 18px;border-radius:4px;overflow-x:auto;white-space:pre;margin:1.8rem 0 0;box-shadow:var(--shadow);max-width:720px}
+.scr .d{color:var(--phos2)}.scr .w{color:#e8efe9}
+.pages{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;margin:2.4rem 0 0}
+.card{border-top:2px solid var(--line);padding-top:1rem;display:flex;flex-direction:column;gap:.5rem}
+.card.a{border-top-color:var(--agent)}.card.b{border-top-color:var(--human)}.card.c{border-top-color:var(--ink2)}
+.card .k{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.card h2{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;font-size:1.5rem;line-height:1.2;margin:0;text-wrap:balance}
+.card h2 a{text-decoration:none}
+.card h2 a:hover{text-decoration:underline;text-decoration-color:var(--agent)}
+.card p{margin:0;color:var(--ink2);font-size:.98rem}
+.card .go{margin-top:auto;padding-top:.6rem;font-size:.9rem}
+.card .go a{color:var(--agent);text-decoration:none;font-weight:500}
+.card .go a:hover{text-decoration:underline}
+section{padding:48px 0 0}
+section h2.sec{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;font-size:1.7rem;margin:0 0 .4rem;letter-spacing:-.01em}
+section p.sub{color:var(--ink2);margin:0 0 1.2rem;max-width:70ch}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.gallery figure{margin:0}
+.gallery img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:var(--shadow)}
+.gallery figcaption{font-size:.84rem;color:var(--mute);margin-top:.5rem;line-height:1.45}
+footer{margin-top:64px;padding:24px 0 56px;border-top:1px solid var(--line);font-size:.86rem;color:var(--mute)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Playwright for the IBM 3270 terminal</p>
+  <h1>Panel<em>wright</em></h1>
+  <p class="lede">A pure-TypeScript tool that lets people and AI agents drive mainframe green-screen applications: from the command line, from a terminal UI, from VS Code. These pages introduce it, argue for it, and record how it was built.</p>
+  <div class="scr" aria-label="Example CLI session"><span class="d">$ panelwright type after:"Logon ===>" HERC01
+$ panelwright press ENTER</span>
+<span class="w">[tso-logon] cur 8,22 fields 6 unlocked</span>
+ <span class="w">PASSWORD FOR HERC01</span>  [2:________]
+ <span class="d">… only the rows that changed are printed</span></div>
+</header>
+
+<div class="pages">
+  <div class="card a">
+    <div class="k">Start here</div>
+    <h2><a href="intro.html">An introduction</a></h2>
+    <p>The product tour with live screenshots: the CLI in sixty seconds, what an agent sees, the terminal UI, the VS Code extension, and the roadmap.</p>
+    <div class="go"><a href="intro.html">Read the introduction →</a></div>
+  </div>
+  <div class="card b">
+    <div class="k">The case</div>
+    <h2><a href="why.html">Why Panelwright</a></h2>
+    <p>3270 explained in Linux terms, why the terminal is the tty of z/OS, the Code4z integration map measured from the shipped bundles, and the case for an emulator inside VS Code.</p>
+    <div class="go"><a href="why.html">Read the argument →</a></div>
+  </div>
+  <div class="card c">
+    <div class="k">The record</div>
+    <h2><a href="making-of.html">The Making of Panelwright</a></h2>
+    <p>How the tool was built in five weeks with Claude as a full-time pair: research, spikes, decisions, the test hosts, how testing changed hands, and who could see which defect.</p>
+    <div class="go"><a href="making-of.html">Read the making-of →</a></div>
+  </div>
+  <div class="card a">
+    <div class="k">A field guide</div>
+    <h2><a href="gibson.html">A tour of GIBSON's 3270 front end</a></h2>
+    <p>GIBSON is an open-source educational mainframe simulator for security training. Twenty-one real screens captured by driving it with Panelwright: TSO, ISPF, RACF, SDSF, CICS, IMS, z/VM, Db2 and OMVS.</p>
+    <div class="go"><a href="gibson.html">Take the tour →</a></div>
+  </div>
+</div>
+
+<section id="sysview">
+  <h2 class="sec">A real screen, with its colours</h2>
+  <p class="sub">Broadcom SYSVIEW's ACTIVITY panel, captured from a z/OS system on 2026-08-27 and replayed into the Panelwright VS Code panel. The CPU and storage gauges are reverse-video runs painted by the host with extended attributes; the panel keeps the host's colour as the background under any VS Code theme. The last image is the same screen exported by the CLI as SVG.</p>
+  <div class="gallery">
+    <figure><a href="assets/sysview/dark-modern.png"><img src="assets/sysview/dark-modern.png" alt="SYSVIEW ACTIVITY panel, VS Code, Dark Modern theme" loading="lazy"></a><figcaption>VS Code, Dark Modern theme</figcaption></figure>
+    <figure><a href="assets/sysview/light-modern.png"><img src="assets/sysview/light-modern.png" alt="SYSVIEW ACTIVITY panel, VS Code, Light Modern theme" loading="lazy"></a><figcaption>VS Code, Light Modern theme</figcaption></figure>
+    <figure><a href="assets/sysview/panelwright-ispf-green.png"><img src="assets/sysview/panelwright-ispf-green.png" alt="SYSVIEW ACTIVITY panel, VS Code, the Panelwright ISPF Green theme" loading="lazy"></a><figcaption>VS Code, the Panelwright ISPF Green theme</figcaption></figure>
+    <figure><a href="assets/sysview/panelwright-phosphor.png"><img src="assets/sysview/panelwright-phosphor.png" alt="SYSVIEW ACTIVITY panel, VS Code, the Panelwright Phosphor theme" loading="lazy"></a><figcaption>VS Code, the Panelwright Phosphor theme</figcaption></figure>
+    <figure><a href="assets/sysview/sysview-activity.svg"><img src="assets/sysview/sysview-activity.svg" alt="SYSVIEW ACTIVITY panel exported as SVG by the panelwright CLI" loading="lazy"></a><figcaption><code>panelwright screen --format svg</code>, the same session</figcaption></figure>
+  </div>
+</section>
+
+<footer>
+  Panelwright is developed at <a href="https://github.com/plavjanik/panelwright">github.com/plavjanik/panelwright</a>. Pages last built <span id="built">2026-09-11</span>.
+</footer>
+</div>
+</body>
+</html>
