@@ -1,0 +1,1956 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Panelwright Appearance Layer</title>
+<meta name="description" content="Every visual effect Panelwright draws that never reaches the host — five palettes, nine cursor effects, field marking, and the terminal UI's own answers — with live demos running the product's real CSS and tunings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,400&display=swap">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+
+
+
+<style>
+/* ------------------------------------------------------------------ *
+ * Page tokens. Light is the bare :root; dark is redefined twice so the
+ * un-stamped (system) state and the explicit toggle both resolve.
+ * The accent is not a chosen hue: #007878 is THEME_3279_LIGHT_PALETTE's
+ * hotspotHover and #2ed3d3 is THEME_CRT_3279_PALETTE's, verbatim.
+ * ------------------------------------------------------------------ */
+:root {
+  --ground: #f2f5f4;
+  --surface: #ffffff;
+  --surface-2: #e9efee;
+  --ink: #12191a;
+  --ink-2: #47585a;
+  --ink-3: #71827f;
+  --rule: #d3dddc;
+  --rule-strong: #b6c5c3;
+  --accent: #007878;
+  --accent-ink: #005d5d;
+  --accent-wash: #dfefee;
+  --amber: #8a4b00;
+  --amber-wash: #f6ecdd;
+
+  /* The "editor" screen palette's chromatic hues, light ground. These are
+     THEME_3279_LIGHT_PALETTE's own values — in the product the editor
+     palette derives from your VS Code theme; here it follows the page. */
+  --ed-fg: #303030; --ed-bg: #f4f4f4;
+  --ed-blue: #0050c8; --ed-red: #c00000; --ed-pink: #b0007a; --ed-green: #007000;
+  --ed-turq: #007878; --ed-yellow: #8a6d00; --ed-nwhite: #101010; --ed-black: #000000;
+  --ed-dblue: #00008a; --ed-orange: #8a4b00; --ed-purple: #6a1b9a; --ed-pgreen: #2e7d32;
+  --ed-pturq: #146464; --ed-grey: #5a5a5a; --ed-white: #101010;
+  --ed-cursor-bg: #007000; --ed-cursor-fg: #f4f4f4; --ed-sel: #bcd9f5;
+  --ed-find: #fff2b280; --ed-findcur: #ffb84dcc; --ed-hot: #007878;
+  --ed-oia: #0050c8; --ed-oia-border: #c8c8c8;
+  --ed-busy: #0050c8; --ed-warn: #8a4b00; --ed-error: #c00000;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0b0f10;
+    --surface: #121a1b;
+    --surface-2: #182223;
+    --ink: #dde5e4;
+    --ink-2: #9aabaa;
+    --ink-3: #748584;
+    --rule: #212d2e;
+    --rule-strong: #324243;
+    --accent: #2ed3d3;
+    --accent-ink: #7ae6e6;
+    --accent-wash: #0e2828;
+    --amber: #ffb347;
+    --amber-wash: #2a2113;
+
+    --ed-fg: #d0d0d0; --ed-bg: #101617;
+    --ed-blue: #4f9cf5; --ed-red: #ff5c5c; --ed-pink: #ff8de0; --ed-green: #4de070;
+    --ed-turq: #3ee0e0; --ed-yellow: #ffe86b; --ed-nwhite: #f2f2f2; --ed-black: #000000;
+    --ed-dblue: #5a7ff5; --ed-orange: #ffb347; --ed-purple: #c07dff; --ed-pgreen: #a5ffb0;
+    --ed-pturq: #b8ffff; --ed-grey: #9a9a9a; --ed-white: #ffffff;
+    --ed-cursor-bg: #3fe06a; --ed-cursor-fg: #101617; --ed-sel: #0d3a63;
+    --ed-find: #5a4d0099; --ed-findcur: #cc7a00cc; --ed-hot: #2ed3d3;
+    --ed-oia: #3d8fe6; --ed-oia-border: #2a3436;
+    --ed-busy: #3d8fe6; --ed-warn: #ffb347; --ed-error: #ff5c5c;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0b0f10;
+  --surface: #121a1b;
+  --surface-2: #182223;
+  --ink: #dde5e4;
+  --ink-2: #9aabaa;
+  --ink-3: #748584;
+  --rule: #212d2e;
+  --rule-strong: #324243;
+  --accent: #2ed3d3;
+  --accent-ink: #7ae6e6;
+  --accent-wash: #0e2828;
+  --amber: #ffb347;
+  --amber-wash: #2a2113;
+
+  --ed-fg: #d0d0d0; --ed-bg: #101617;
+  --ed-blue: #4f9cf5; --ed-red: #ff5c5c; --ed-pink: #ff8de0; --ed-green: #4de070;
+  --ed-turq: #3ee0e0; --ed-yellow: #ffe86b; --ed-nwhite: #f2f2f2; --ed-black: #000000;
+  --ed-dblue: #5a7ff5; --ed-orange: #ffb347; --ed-purple: #c07dff; --ed-pgreen: #a5ffb0;
+  --ed-pturq: #b8ffff; --ed-grey: #9a9a9a; --ed-white: #ffffff;
+  --ed-cursor-bg: #3fe06a; --ed-cursor-fg: #101617; --ed-sel: #0d3a63;
+  --ed-find: #5a4d0099; --ed-findcur: #cc7a00cc; --ed-hot: #2ed3d3;
+  --ed-oia: #3d8fe6; --ed-oia-border: #2a3436;
+  --ed-busy: #3d8fe6; --ed-warn: #ffb347; --ed-error: #ff5c5c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+}
+.prose { max-width: 66ch; }
+.prose p { margin: 0 0 1.05em; color: var(--ink-2); }
+.prose p strong { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3 {
+  font-family: "IBM Plex Serif", Georgia, serif;
+  text-wrap: balance;
+  color: var(--ink);
+  margin: 0;
+}
+h1 { font-size: clamp(2.2rem, 5.4vw, 3.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.015em; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; line-height: 1.18; letter-spacing: -0.01em; }
+h3 { font-size: 1.08rem; font-weight: 600; line-height: 1.35; }
+
+/* Google's IBM Plex Mono subset carries no U+2500 block, so a box-drawing
+   character falls back per-glyph to whatever the platform offers — often a
+   PROPORTIONAL face, which drifts the right edge of every frame. Two guards:
+   prefer a real mono for that range, and pin each such glyph to one cell. */
+@font-face {
+  font-family: "PWBox";
+  src: local("Menlo"), local("DejaVu Sans Mono"), local("Consolas"), local("Liberation Mono"), local("Noto Sans Mono");
+  unicode-range: U+2500-259F;
+}
+.bx {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+code, .mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+.prose code, td code, li code {
+  font-size: 0.86em;
+  background: var(--surface-2);
+  border-radius: 3px;
+  padding: 0.1em 0.34em;
+  color: var(--ink);
+}
+
+a { color: var(--accent-ink); text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 2px; }
+
+/* ---------- masthead ---------- */
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 40px 0 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.standfirst {
+  font-family: "IBM Plex Serif", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 58ch;
+  margin: 0;
+}
+.mast-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  color: var(--ink-3);
+}
+.mast-meta span::before { content: "▸ "; color: var(--accent); }
+
+/* ---------- sections ---------- */
+section { padding-top: 64px; }
+.sec-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 26px;
+}
+.sec-key {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.sec-key b { color: var(--accent-ink); font-weight: 500; }
+
+/* ---------- the 3270 screen ---------- */
+.screen-frame {
+  margin: 26px 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.pw-screen {
+  --pw-fs: clamp(9px, 1.85vw, 14px);
+  font-family: "PWBox", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  font-size: var(--pw-fs);
+  line-height: 1.2;
+  background: var(--pw-bg);
+  color: var(--pw-fg);
+  width: max-content;
+  min-width: 100%;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  --pw-cursor-glow: color-mix(in srgb, var(--pw-cursor-bg) 65%, transparent);
+}
+.pw-grid {
+  position: relative;
+  padding: 8px 10px;
+  white-space: pre;
+  outline: none;
+  overflow: hidden;
+}
+.pw-grid:focus-visible { box-shadow: inset 0 0 0 2px var(--pw-hotspot); }
+.pw-row { display: block; position: relative; height: 1.2em; width: max-content; }
+/* Cell width is measured from THIS, never from a row: trailing whitespace
+   hangs and does not count toward a row's intrinsic width, so a screen whose
+   first row is blank measured a cell at 40% of its real size and every canvas
+   effect landed in the wrong place. */
+.pw-ruler { position: absolute; left: 0; top: 0; visibility: hidden; pointer-events: none; white-space: pre; }
+.pw-row > span { display: inline-block; height: 1.2em; position: relative; }
+
+.pw-b { font-weight: 600; }
+.pw-u { text-decoration: underline; }
+.pw-blink { animation: pw-blink 1s step-end infinite; }
+@keyframes pw-blink { 50% { opacity: 0.25; } }
+
+/* reverse video, two renderings — the real reverseVideo setting */
+[data-rv="tinted"] .pw-rev {
+  background-color: color-mix(in srgb, var(--cell, currentColor) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cell, currentColor) 55%, transparent);
+}
+[data-rv="classic"] .pw-rev { background-color: var(--cell, currentColor); color: var(--pw-bg); }
+
+/* field-typeability marking — PW-244's own percentages */
+[data-tint="subtle"] .pw-field { background-color: color-mix(in srgb, var(--pw-tint-base) 4%, transparent); }
+[data-tint="subtle"] .pw-field.act { background-color: color-mix(in srgb, var(--pw-tint-base) 8%, transparent); }
+[data-tint="default"] .pw-field { background-color: color-mix(in srgb, var(--pw-tint-base) 5.5%, transparent); }
+[data-tint="default"] .pw-field.act { background-color: color-mix(in srgb, var(--pw-tint-base) 11%, transparent); }
+[data-tint="strong"] .pw-field { background-color: color-mix(in srgb, var(--pw-tint-base) 8.5%, transparent); }
+[data-tint="strong"] .pw-field.act { background-color: color-mix(in srgb, var(--pw-tint-base) 17%, transparent); }
+[data-mark-active="off"][data-tint="subtle"] .pw-field.act { background-color: color-mix(in srgb, var(--pw-tint-base) 4%, transparent); }
+[data-mark-active="off"][data-tint="default"] .pw-field.act { background-color: color-mix(in srgb, var(--pw-tint-base) 5.5%, transparent); }
+[data-mark-active="off"][data-tint="strong"] .pw-field.act { background-color: color-mix(in srgb, var(--pw-tint-base) 8.5%, transparent); }
+.pw-field.hov { box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--pw-hotspot) 12%, transparent); }
+[data-hover="off"] .pw-field.hov { box-shadow: none; }
+[data-hatch="soft"] .pw-hidden {
+  background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--pw-hatch-base) 8%, transparent) 0 1px, transparent 1px 5px);
+}
+[data-hatch="medium"] .pw-hidden {
+  background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--pw-hatch-base) 14%, transparent) 0 1px, transparent 1px 5px);
+}
+.pw-row.cur-line { background-color: color-mix(in srgb, var(--pw-tint-base) 4%, transparent); }
+[data-current-line="off"] .pw-row.cur-line { background-color: transparent; }
+
+.pw-hotspot { cursor: pointer; }
+.pw-hotspot:hover { text-decoration: underline; text-decoration-color: var(--pw-hotspot); }
+.pw-zowe { cursor: pointer; text-decoration: underline dotted; text-decoration-color: var(--pw-hotspot); }
+.pw-zowe:hover { text-decoration-style: solid; }
+.pw-sel { background: var(--pw-sel-bg); }
+.pw-find { background: var(--pw-find-bg); }
+.pw-find-current { background: var(--pw-findcur-bg); }
+.pw-proposed {
+  background-color: color-mix(in srgb, var(--amber) 20%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--amber) 65%, transparent);
+}
+.pw-proposed-cursor { box-shadow: inset 0 0 0 2px var(--amber); }
+
+/* the hand-drawn cursor, on its own layer */
+.pw-cursor-layer { position: absolute; inset: 8px 10px; pointer-events: none; z-index: 3; }
+.pw-cursor {
+  position: absolute;
+  display: block;
+  background: var(--pw-cursor-bg);
+  color: var(--pw-cursor-fg);
+  animation: pw-cursor-blink 1s step-end infinite;
+}
+@keyframes pw-cursor-blink { 50% { opacity: 0.3; } }
+
+@keyframes pw-cursor-pulse-glow {
+  0%, 100% { box-shadow: 0 0 2px 0 var(--pw-cursor-glow); }
+  50%      { box-shadow: 0 0 5px 1px var(--pw-cursor-glow); }
+}
+[data-fx="pulse"] .pw-cursor::after {
+  content: ""; position: absolute; inset: -1px; border-radius: 2px; pointer-events: none;
+  box-shadow: 0 0 3px 0 var(--pw-cursor-glow);
+  animation: pw-cursor-pulse-glow 2s ease-in-out infinite;
+}
+[data-fx="raster"] .pw-cursor::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.3) 0 1px, rgba(0,0,0,0) 1px 2px);
+  animation: pw-cursor-raster-flicker 0.14s steps(2) infinite;
+}
+[data-fx="raster"] .pw-cursor::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: 0 -5px 7px -2px var(--pw-cursor-glow), 0 5px 7px -2px var(--pw-cursor-glow);
+}
+@keyframes pw-cursor-raster-flicker { 50% { opacity: 0.72; } }
+
+.pw-fx-canvas { position: absolute; inset: 8px 10px; pointer-events: none; z-index: 2; }
+.pw-backdrop {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0;
+  transition: opacity 220ms ease;
+  background-image:
+    repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 42px),
+    radial-gradient(circle at 74% 30%, currentColor 0 2px, transparent 2px);
+  background-size: auto, auto, 84px 84px;
+  color: var(--pw-fg);
+}
+[data-backdrop="on"] .pw-backdrop { opacity: 0.2; }
+
+/* ISPF pop-up window shadow */
+.pw-window-layer { position: absolute; inset: 8px 10px; pointer-events: none; z-index: 4; }
+.pw-window {
+  position: absolute;
+  background: var(--pw-bg);
+  border: 1px solid color-mix(in srgb, var(--pw-fg) 45%, transparent);
+  white-space: pre;
+  color: var(--pw-fg);
+  padding: 0.2em 0;
+}
+[data-shadow="on"] .pw-window { box-shadow: 3px 4px 10px rgba(0,0,0,0.55); }
+
+.pw-ended {
+  position: absolute; inset: 0; z-index: 6;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.35);
+}
+.pw-ended-card {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 14px 22px; border-radius: 6px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface); color: var(--ink);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  font-family: "IBM Plex Sans", sans-serif; font-size: 13px; text-align: center;
+}
+
+/* OIA strip */
+.pw-oia {
+  border-top: 1px solid var(--pw-oia-border);
+  color: var(--pw-oia-fg);
+  display: flex; gap: 1.6em;
+  padding: 3px 10px;
+  font-size: var(--pw-fs);
+}
+.pw-oia .grow { flex: 1 1 auto; }
+.pw-oia .pos { font-variant-numeric: tabular-nums; }
+.tone-busy { color: var(--pw-busy); }
+.tone-warn { color: var(--pw-warn); }
+.tone-error { color: var(--pw-error); }
+
+/* ---------- palettes: real values from packages/vscode/src/screen/palette.ts ---------- */
+[data-palette="editor"] {
+  --pw-fg: var(--ed-fg); --pw-bg: var(--ed-bg);
+  --pw-cursor-bg: var(--ed-cursor-bg); --pw-cursor-fg: var(--ed-cursor-fg);
+  --pw-sel-bg: var(--ed-sel); --pw-find-bg: var(--ed-find); --pw-findcur-bg: var(--ed-findcur);
+  --pw-hotspot: var(--ed-hot); --pw-oia-fg: var(--ed-oia); --pw-oia-border: var(--ed-oia-border);
+  --pw-busy: var(--ed-busy); --pw-warn: var(--ed-warn); --pw-error: var(--ed-error);
+  --pw-tint-base: var(--ed-fg); --pw-hatch-base: var(--ed-fg);
+  --c-blue: var(--ed-blue); --c-red: var(--ed-red); --c-pink: var(--ed-pink); --c-green: var(--ed-green);
+  --c-turq: var(--ed-turq); --c-yellow: var(--ed-yellow); --c-nwhite: var(--ed-nwhite); --c-black: var(--ed-black);
+  --c-dblue: var(--ed-dblue); --c-orange: var(--ed-orange); --c-purple: var(--ed-purple);
+  --c-pgreen: var(--ed-pgreen); --c-pturq: var(--ed-pturq); --c-grey: var(--ed-grey); --c-white: var(--ed-white);
+}
+[data-palette="3279"] {
+  --pw-fg: #d0d0d0; --pw-bg: #000000;
+  --pw-cursor-bg: #00d700; --pw-cursor-fg: #000000;
+  --pw-sel-bg: #003a6b; --pw-find-bg: #5a4d0099; --pw-findcur-bg: #cc7a00cc;
+  --pw-hotspot: #00d7d7; --pw-oia-fg: #0087ff; --pw-oia-border: #303030;
+  --pw-busy: #0087ff; --pw-warn: #ffaf00; --pw-error: #ff0000;
+  --pw-tint-base: #d0d0d0; --pw-hatch-base: #d0d0d0;
+  --c-blue: #0087ff; --c-red: #ff0000; --c-pink: #ff87ff; --c-green: #00d700;
+  --c-turq: #00d7d7; --c-yellow: #ffff00; --c-nwhite: #ffffff; --c-black: #000000;
+  --c-dblue: #0000d7; --c-orange: #ffaf00; --c-purple: #af00ff;
+  --c-pgreen: #87ff87; --c-pturq: #afffff; --c-grey: #bcbcbc; --c-white: #ffffff;
+}
+[data-palette="3279-light"] {
+  --pw-fg: #303030; --pw-bg: #f4f4f4;
+  --pw-cursor-bg: #007000; --pw-cursor-fg: #f4f4f4;
+  --pw-sel-bg: #bcd9f5; --pw-find-bg: #fff2b280; --pw-findcur-bg: #ffb84dcc;
+  --pw-hotspot: #007878; --pw-oia-fg: #0050c8; --pw-oia-border: #c8c8c8;
+  --pw-busy: #0050c8; --pw-warn: #8a4b00; --pw-error: #c00000;
+  --pw-tint-base: #303030; --pw-hatch-base: #303030;
+  --c-blue: #0050c8; --c-red: #c00000; --c-pink: #b0007a; --c-green: #007000;
+  --c-turq: #007878; --c-yellow: #8a6d00; --c-nwhite: #101010; --c-black: #000000;
+  --c-dblue: #00008a; --c-orange: #8a4b00; --c-purple: #6a1b9a;
+  --c-pgreen: #2e7d32; --c-pturq: #146464; --c-grey: #5a5a5a; --c-white: #101010;
+}
+[data-palette="crt-3279"] {
+  --pw-fg: #d8d8d8; --pw-bg: #0b0b0d;
+  --pw-cursor-bg: #3fe06a; --pw-cursor-fg: #0b0b0d;
+  --pw-sel-bg: #0d3a63; --pw-find-bg: #5a4d0099; --pw-findcur-bg: #cc7a00cc;
+  --pw-hotspot: #2ed3d3; --pw-oia-fg: #3d8fe6; --pw-oia-border: #2a2a2e;
+  --pw-busy: #3d8fe6; --pw-warn: #ffb347; --pw-error: #ff5c5c;
+  --pw-tint-base: #d8d8d8; --pw-hatch-base: #d8d8d8;
+  --c-blue: #4f9cf5; --c-red: #ff5c5c; --c-pink: #ff8de0; --c-green: #4de070;
+  --c-turq: #3ee0e0; --c-yellow: #ffe86b; --c-nwhite: #f2f2f2; --c-black: #000000;
+  --c-dblue: #5a7ff5; --c-orange: #ffb347; --c-purple: #c07dff;
+  --c-pgreen: #a5ffb0; --c-pturq: #b8ffff; --c-grey: #9a9a9a; --c-white: #ffffff;
+}
+[data-palette="crt-3279"] .pw-row > span { text-shadow: 0 0 2px color-mix(in srgb, currentColor 35%, transparent); }
+[data-palette="phosphor-green"] {
+  --pw-fg: #39d353; --pw-bg: #060a06;
+  --pw-cursor-bg: #7dff9a; --pw-cursor-fg: #060a06;
+  --pw-sel-bg: #0f3d1a; --pw-find-bg: #2a4a00aa; --pw-findcur-bg: #6b8a00cc;
+  --pw-hotspot: #9dffb0; --pw-oia-fg: #2a9a3f; --pw-oia-border: #123a1a;
+  --pw-busy: #2a9a3f; --pw-warn: #8dff8a; --pw-error: #d8ffe0;
+  --pw-tint-base: #39d353; --pw-hatch-base: #39d353;
+  --c-blue: #2fb84a; --c-red: #7dff9a; --c-pink: #66e07f; --c-green: #39d353;
+  --c-turq: #4be386; --c-yellow: #8dff8a; --c-nwhite: #b6ffc8; --c-black: #0d1f10;
+  --c-dblue: #22883a; --c-orange: #86f07a; --c-purple: #5ccf7f;
+  --c-pgreen: #a0f0b0; --c-pturq: #a8f5c8; --c-grey: #1f7a33; --c-white: #d8ffe0;
+}
+[data-palette="phosphor-green"] .pw-row > span { text-shadow: 0 0 3px rgba(57,211,83,0.55); }
+
+.c-blue{--cell:var(--c-blue);color:var(--cell)}
+.c-red{--cell:var(--c-red);color:var(--cell)}
+.c-pink{--cell:var(--c-pink);color:var(--cell)}
+.c-green{--cell:var(--c-green);color:var(--cell)}
+.c-turq{--cell:var(--c-turq);color:var(--cell)}
+.c-yellow{--cell:var(--c-yellow);color:var(--cell)}
+.c-nwhite{--cell:var(--c-nwhite);color:var(--cell)}
+.c-black{--cell:var(--c-black);color:var(--cell)}
+.c-dblue{--cell:var(--c-dblue);color:var(--cell)}
+.c-orange{--cell:var(--c-orange);color:var(--cell)}
+.c-purple{--cell:var(--c-purple);color:var(--cell)}
+.c-pgreen{--cell:var(--c-pgreen);color:var(--cell)}
+.c-pturq{--cell:var(--c-pturq);color:var(--cell)}
+.c-grey{--cell:var(--c-grey);color:var(--cell)}
+.c-white{--cell:var(--c-white);color:var(--cell)}
+
+/* ---------- bench controls ---------- */
+.bench {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 18px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 900px) {
+  .bench { grid-template-columns: minmax(0, 1fr) 246px; align-items: start; }
+}
+.bench .screen-frame { margin: 0; }
+.controls { display: flex; flex-direction: column; gap: 14px; }
+.ctl { display: flex; flex-direction: column; gap: 5px; }
+.ctl > label, .ctl-title {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);
+}
+select {
+  font: inherit; font-size: 0.86rem; font-family: "IBM Plex Mono", monospace;
+  background: var(--ground); color: var(--ink);
+  border: 1px solid var(--rule-strong); border-radius: 3px;
+  padding: 6px 8px; width: 100%;
+}
+select:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.toggles label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.76rem; color: var(--ink-2);
+  cursor: pointer;
+}
+input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; }
+.fx-note {
+  font-size: 0.8rem; line-height: 1.45; color: var(--ink-2);
+  border-left: 2px solid var(--accent); padding-left: 10px; min-height: 3.4em;
+}
+.fx-note b { color: var(--ink); font-weight: 600; }
+.hint { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--ink-3); }
+.rm-notice {
+  display: none; font-size: 0.78rem; color: var(--amber);
+  border-left: 2px solid var(--amber); padding-left: 10px;
+}
+@media (prefers-reduced-motion: reduce) { .rm-notice { display: block; } }
+
+/* ---------- tables ---------- */
+.tbl-wrap { overflow-x: auto; margin: 22px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);
+  border-bottom: 1px solid var(--rule-strong);
+}
+td:first-child { font-family: "IBM Plex Mono", monospace; color: var(--ink); white-space: nowrap; font-weight: 500; }
+td { color: var(--ink-2); }
+
+/* ---------- cursor-effect comparison ---------- */
+.fx-gallery { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin: 18px 0 30px; }
+.fx-tile { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--surface); }
+.fx-tile .pw-screen { border: 0; border-radius: 0; --pw-fs: 15px; width: 100%; }
+/* The tile cursors are held STEADY. Two of the ten (pulse, raster) draw their
+   whole effect on the cursor block itself, and a blink hides them half the
+   time — which is exactly what made the row read as ten identical tiles. */
+.fx-tile .pw-cursor { animation: none; }
+.fx-tile .pw-grid { padding: 7px 8px; }
+.fx-tile .pw-cursor-layer, .fx-tile .pw-fx-canvas { inset: 7px 8px; }
+.fx-tile figcaption { margin: 0; padding: 9px 11px 11px; border-top: 1px solid var(--rule); }
+.fx-tile b { display: block; font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.fx-tile span { font-family: "IBM Plex Sans", sans-serif; font-size: 0.78rem; line-height: 1.4; color: var(--ink-2); }
+
+/* the three effects drawn ON the block, at a size where 1px scanlines read */
+.mag-row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(236px, 1fr)); margin: 16px 0 8px; }
+.mag { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--surface); }
+.mag .pw-screen { border: 0; border-radius: 0; --pw-fs: 40px; width: 100%; }
+.mag .pw-grid { padding: 14px 10px; }
+.mag .pw-cursor-layer { inset: 14px 10px; }
+.mag .pw-cursor { animation: none; }
+.mag figcaption { margin: 0; padding: 9px 11px 11px; border-top: 1px solid var(--rule); }
+.mag b { display: block; font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.mag span { font-family: "IBM Plex Sans", sans-serif; font-size: 0.78rem; line-height: 1.4; color: var(--ink-2); }
+
+/* ---------- palette gallery ---------- */
+.gallery { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin: 24px 0; }
+.pal-card { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--surface); }
+.pal-card > .screen-frame { margin: 0; }
+.pal-card .pw-screen { border: 0; border-radius: 0; --pw-fs: 11px; }
+.pal-meta { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--rule); }
+.pal-name { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; font-weight: 500; color: var(--ink); }
+.pal-desc { font-size: 0.8rem; line-height: 1.45; color: var(--ink-2); }
+.swatches { display: flex; flex-wrap: wrap; gap: 3px; }
+.swatches i { width: 15px; height: 15px; border-radius: 2px; display: block; border: 1px solid rgba(128,128,128,0.3); }
+
+/* ---------- rule cards ---------- */
+.rules { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; margin: 26px 0 0; }
+@media (min-width: 760px) { .rules { grid-template-columns: 1fr 1fr; } }
+.rule-item { background: var(--surface); padding: 18px 20px; display: flex; flex-direction: column; gap: 7px; }
+.rule-item h3 { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; font-weight: 500; color: var(--accent-ink); letter-spacing: 0.01em; }
+.rule-item p { margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--ink-2); }
+
+/* ---------- legend / TUI ---------- */
+.legend { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 22px 0; }
+.legend div { display: flex; flex-direction: column; gap: 3px; }
+.legend b { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; font-weight: 500; color: var(--ink); }
+.legend span { font-size: 0.84rem; line-height: 1.45; color: var(--ink-2); }
+
+.tui-row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 22px 0; }
+.tui-box { border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); overflow: hidden; }
+.tui-box header {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; color: var(--ink-2);
+  padding: 8px 12px; border-bottom: 1px solid var(--rule); background: var(--surface-2);
+}
+.tui-term {
+  font-family: "PWBox", "IBM Plex Mono", monospace; font-size: 11px; line-height: 1.35;
+  white-space: pre; overflow-x: auto; padding: 12px;
+}
+.t-dark { background: #000; color: #bcbcbc; }
+.t-plain { background: var(--surface); color: var(--ink); }
+.tui-term .blk { background: currentColor; }
+
+figcaption {
+  font-size: 0.8rem; line-height: 1.5; color: var(--ink-3);
+  font-family: "IBM Plex Mono", monospace;
+  margin-top: 10px; max-width: 74ch;
+}
+figure { margin: 0; }
+
+footer {
+  margin-top: 80px; padding-top: 26px; border-top: 1px solid var(--rule);
+  font-size: 0.84rem; color: var(--ink-3); max-width: 66ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-cursor, [data-fx="pulse"] .pw-cursor::after, [data-fx="raster"] .pw-cursor::before, .pw-blink {
+    animation: none !important;
+  }
+  .pw-backdrop { transition: none; }
+}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow"><a href="index.html" style="text-decoration:none;color:inherit">Panelwright</a> · appearance only</div>
+    <h1>Everything the screen draws that the host never sees</h1>
+    <p class="standfirst">A 3270 panel is 1,920 characters and a handful of attribute bytes. Panelwright draws a great deal more than that — and none of it reaches the wire.</p>
+    <div class="mast-meta">
+      <span>8 groups of effect</span>
+      <span>5 screen palettes</span>
+      <span>9 cursor effects</span>
+      <span>values lifted from <code class="mono">palette.ts</code></span>
+    </div>
+  </header>
+
+  <section id="bench">
+    <div class="sec-head">
+      <div class="sec-key">§1 &nbsp; <b>panelwright.screen.cursorEffect</b> &nbsp;·&nbsp; shipped PW-052.12, retuned PW-205, widened PW-212</div>
+      <h2>The bench</h2>
+    </div>
+    <div class="prose">
+      <p>Every number below is the one the product ships: the tunings were chosen on a published bench, each candidate rendered live at three settings over a real ISPF panel and judged on a phone. Move the cursor by clicking a cell, or type into a tinted field.</p>
+    </div>
+
+    <div class="bench">
+      <div class="screen-frame">
+        <div class="pw-screen" id="bench-screen" data-palette="crt-3279" data-rv="tinted">
+          <div class="pw-grid" id="bench-grid" tabindex="0"
+               data-fx="fire" data-tint="default" data-hatch="soft"
+               data-mark-active="on" data-hover="on" data-current-line="on" data-backdrop="off" data-shadow="on">
+            <div class="pw-backdrop"></div>
+            <div class="pw-rows"></div>
+            <canvas class="pw-fx-canvas"></canvas>
+            <div class="pw-cursor-layer"><div class="pw-cursor">&nbsp;</div></div>
+          </div>
+          <div class="pw-oia">
+            <span>4&#8209;A</span>
+            <span class="tone-busy" id="bench-lock">&nbsp;</span>
+            <span class="grow"></span>
+            <span class="pos" id="bench-pos">01/001</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="ctl">
+          <label for="c-fx">Cursor effect</label>
+          <select id="c-fx">
+            <option value="none">none</option>
+            <option value="pulse">pulse</option>
+            <option value="raster">raster</option>
+            <option value="crosshair">crosshair</option>
+            <option value="fire" selected>fire</option>
+            <option value="sparkle">sparkle</option>
+            <option value="trail">trail</option>
+            <option value="chad">chad</option>
+            <option value="phosphor">phosphor</option>
+            <option value="beam">beam</option>
+          </select>
+        </div>
+        <div class="ctl" id="fire-ctl">
+          <label for="c-fire">Fire intensity</label>
+          <select id="c-fire">
+            <option value="subtle">subtle</option>
+            <option value="normal" selected>normal</option>
+            <option value="strong">strong</option>
+          </select>
+        </div>
+        <div class="fx-note" id="fx-note"></div>
+        <div class="ctl">
+          <label for="c-pal">Screen palette</label>
+          <select id="c-pal">
+            <option value="editor">editor</option>
+            <option value="3279">3279</option>
+            <option value="3279-light">3279-light</option>
+            <option value="crt-3279" selected>crt-3279</option>
+            <option value="phosphor-green">phosphor-green</option>
+          </select>
+        </div>
+        <div class="ctl">
+          <label for="c-tint">Field tint</label>
+          <select id="c-tint">
+            <option value="off">off</option>
+            <option value="subtle">subtle</option>
+            <option value="default" selected>default &mdash; 5.5%</option>
+            <option value="strong">strong</option>
+          </select>
+        </div>
+        <div class="ctl">
+          <div class="ctl-title">Marking</div>
+          <div class="toggles">
+            <label><input type="checkbox" id="c-active" checked> active field</label>
+            <label><input type="checkbox" id="c-hover" checked> hover</label>
+            <label><input type="checkbox" id="c-line" checked> current line</label>
+            <label><input type="checkbox" id="c-backdrop"> backdrop</label>
+            <label><input type="checkbox" id="c-auto" checked> auto-move</label>
+          </div>
+        </div>
+        <div class="hint">Click a cell to place the cursor. Tab moves field to field.</div>
+        <div class="rm-notice">Your system asks for reduced motion, so the animated effects are off — exactly as they are in the product. <code class="mono">crosshair</code> still draws: there is no motion in it to reduce.</div>
+      </div>
+    </div>
+
+    <figcaption>ISPF 3.4, the Data Set List Utility. The cursor is hand-drawn, never the terminal's own — the same decision the TUI made, for a different reason.</figcaption>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Effect</th><th>What it draws</th><th>Tuning that ships</th></tr></thead>
+        <tbody>
+          <tr><td>pulse</td><td>A soft breathing glow around the cursor cell.</td><td>2s ease-in-out, 2&ndash;5px halo, pure CSS</td></tr>
+          <tr><td>raster</td><td>The block drawn as a CRT raster: scanlines, phosphor bleed into the rows above and below, a mains flicker. Contained to the cell.</td><td>0.14s steps(2); halation spills <em>vertically only</em></td></tr>
+          <tr><td>crosshair</td><td>Faint rules to the panel edges plus a row/column readout. Which column am I in, answered without counting.</td><td>alpha 0.24, readout 0.7 at 10px; never animates</td></tr>
+          <tr><td>fire</td><td>Continuous rising embers, like a lit match. The only effect with an intensity knob.</td><td>normal: 48 embers, rise 20px, alpha 0.7</td></tr>
+          <tr><td>sparkle</td><td>A brief burst of sparks on type or move, then it settles.</td><td>4&ndash;6 sparks, r 1.4px, alpha 0.7</td></tr>
+          <tr><td>trail</td><td>A short fading ghost behind the cursor as it moves between fields.</td><td>alpha 0.26, 165 ms</td></tr>
+          <tr><td>chad</td><td>Punch-card chads fall and tumble out of the cursor. Rectangles, not circles &mdash; that is the whole point of it next to sparkle.</td><td>4&ndash;6 per move, gravity 0.11, decay 0.975</td></tr>
+          <tr><td>phosphor</td><td>Afterglow: every cell the cursor leaves keeps a decaying tint, tracing where you have been.</td><td>4,000 ms, alpha 0.14, additive on a dark ground</td></tr>
+          <tr><td>beam</td><td>A streak from where the cursor was to where it went, with a bright head travelling the line &mdash; the connection a jump makes, not just its endpoints.</td><td>260 ms, width 1.5px, head r 1.8px</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin:44px 0 4px">All nine at once</h3>
+    <div class="prose"><p>The same panel, the same palette, the same cursor walking the same six stops. Only the effect differs &mdash; and four of them are transient, so hover a tile to fire it on demand. The cursors here are held steady rather than blinking, which is the one thing these tiles do that the product does not.</p></div>
+    <div class="fx-gallery" id="fx-gallery"></div>
+
+    <h3 style="margin:36px 0 4px">The three on the block, magnified</h3>
+    <div class="prose"><p><code>pulse</code> and <code>raster</code> never leave the cursor cell, and a raster is one-pixel scanlines &mdash; at a real cell size they are a texture you sense rather than see. The same CSS at 40px.</p></div>
+    <div class="mag-row" id="mag-row"></div>
+
+    <div class="prose">
+      <p>Panelwright ships with <code>none</code>. The knob exists once, for <code>fire</code> alone: the verdict when the effects were retuned was that a general intensity control would be three settings nobody could tell apart on eight of the nine.</p>
+      <p><strong>Two of them are pure CSS.</strong> <code>pulse</code> and <code>raster</code> never create a canvas, so they cost nothing per frame — which is why the animated-looking pair are the cheap ones and the still-looking <code>crosshair</code> is cheaper still.</p>
+    </div>
+  </section>
+
+  <section id="palettes">
+    <div class="sec-head">
+      <div class="sec-key">§2 &nbsp; <b>panelwright.screen.theme</b> &nbsp;·&nbsp; <b>.reverseVideo</b> &nbsp;·&nbsp; PW-354..361</div>
+      <h2>Five ways to colour a screen</h2>
+    </div>
+    <div class="prose">
+      <p>A 3270 sends colour as an <em>attribute</em>, not a value: blue, red, pink, green, turquoise, yellow, white and the eight extended names. What those names look like is entirely the client's business, and Panelwright answers it five ways.</p>
+    </div>
+    <div class="gallery" id="pal-gallery"></div>
+    <div class="prose">
+      <p>The <code>3279</code> hues are not re-chosen for the editor — they are the exact hex equivalents of the xterm-256 codes the terminal UI's own table uses, so <code>panelwright ui --theme 3279</code> and a VS Code panel show you the same screen. <code>3279-light</code> exists because a panel sits in an editor whose theme may be light, where a black screen reads as a hole in the window; the colour that cannot simply be darkened there is <strong>white</strong>, which in the classic four-colour field scheme means <em>brightest</em>, so its faithful light-ground rendering is a dark neutral.</p>
+      <p>Separately, reverse video has two renderings, because the honest one is not always the readable one:</p>
+    </div>
+
+    <figure>
+      <div class="screen-frame">
+        <div class="pw-screen" id="rv-screen" data-palette="crt-3279" data-rv="tinted">
+          <div class="pw-grid" data-fx="none" data-tint="off" data-hatch="off"><div class="pw-rows"></div></div>
+        </div>
+      </div>
+      <figcaption>
+        <label style="display:inline-flex;gap:8px;align-items:center;cursor:pointer">
+          <input type="checkbox" id="c-rv"> draw reverse video the <b>classic</b> way
+        </label><br>
+        tinted (the default) washes the cell in its own colour with a thin outline, so the text stays readable in its colour; classic swaps foreground and background, as a real 3279 and c3270 do.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <p>Four <strong>workbench</strong> themes ship alongside these, colouring the whole editor rather than just the grid: Panelwright Dark, Light, Phosphor and ISPF Green.</p>
+    </div>
+  </section>
+
+  <section id="marking">
+    <div class="sec-head">
+      <div class="sec-key">§3 &nbsp; <b>.fieldTint</b> <b>.markActiveField</b> <b>.hoverFields</b> <b>.currentLine</b> <b>.hiddenFieldHatch</b> <b>.hiddenFieldContent</b> &nbsp;·&nbsp; PW-244 (D25)</div>
+      <h2>Where can I type?</h2>
+    </div>
+    <div class="prose">
+      <p>On a real terminal you find out by clicking. Panelwright marks it: a faint wash over every unprotected cell, twice that wash on the field the cursor is in, a third neutral shade under the pointer, and a full-width wash on the cursor's own row. The percentages below are the owner's picks from a three-round visual bench, not a designer's defaults.</p>
+    </div>
+
+    <figure>
+      <div class="screen-frame">
+        <div class="pw-screen" id="logon-screen" data-palette="3279" data-rv="tinted">
+          <div class="pw-grid" id="logon-grid" data-fx="none" data-tint="default" data-hatch="soft" data-mark-active="on" data-hover="on" data-current-line="on">
+            <div class="pw-rows"></div>
+            <div class="pw-cursor-layer"><div class="pw-cursor">&nbsp;</div></div>
+          </div>
+        </div>
+      </div>
+      <figcaption>TSO/E LOGON. The password field is non-display: hatched, and showing one dot per stored character.</figcaption>
+    </figure>
+
+    <div class="toggles" style="margin:16px 0 4px">
+      <label><input type="checkbox" id="l-tint" checked> field tint</label>
+      <label><input type="checkbox" id="l-strong"> strong (8.5%)</label>
+      <label><input type="checkbox" id="l-hatch" checked> hidden-field hatch</label>
+      <label><input type="checkbox" id="l-medium"> medium hatch (14%)</label>
+      <label><input type="checkbox" id="l-dots" checked> dots instead of blanks</label>
+    </div>
+
+    <div class="rules">
+      <div class="rule-item">
+        <h3>No borders, ever</h3>
+        <p>A cell is an inline-block span with an explicit height. A border grows the box and drifts every row below it, so only background, inset shadow and opacity are permissible marks.</p>
+      </div>
+      <div class="rule-item">
+        <h3>A field stays one span</h3>
+        <p>An end-tick variant needed first-cell and last-cell classes — and marking those two cells splits the field, at whose edges a background image restarts, visibly detaching the first and last character from the hatch. The variant was dropped instead.</p>
+      </div>
+      <div class="rule-item">
+        <h3>The underline was rejected on evidence</h3>
+        <p>Hosts already underline: <code>SA highlighting(underscore)</code> renders as one, and ISPF underscores its own input fields with it. Ours would have been indistinguishable. A background is a channel the host is not using.</p>
+      </div>
+      <div class="rule-item">
+        <h3>Dots cost no new information</h3>
+        <p>The field list already carries <code>&lt;hidden, n chars typed&gt;</code> across the wire, so the count was public before the dots were. They never reveal a character — only how many.</p>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:26px">
+      <p><strong>The marking rides with the paint.</strong> Every host repaint used to post an untinted screen and fetch the field list afterwards, so the tint visibly flashed in on each one — <em>"can it be done as a part of the refresh so we do not display any screen without tint?"</em> Now a repaint builds the render, holds it, fetches the fields and posts one message carrying both, on a 250 ms budget; a slow fetch releases the hold untinted rather than holding a stale frame.</p>
+    </div>
+  </section>
+
+  <section id="depth">
+    <div class="sec-head">
+      <div class="sec-key">§4 &nbsp; <b>.windowShadow</b> &nbsp;·&nbsp; <b>.backgroundImage</b> &nbsp;·&nbsp; <b>.backgroundImageOpacity</b></div>
+      <h2>Depth and backdrop</h2>
+    </div>
+    <div class="prose">
+      <p>ISPF pop-ups and pull-downs are drawn by the host as box-drawing characters on the same flat grid as everything else. Panelwright detects the box and lifts it: a drop shadow underneath, so a window reads as a window.</p>
+    </div>
+
+    <figure>
+      <div class="screen-frame">
+        <div class="pw-screen" id="win-screen" data-palette="crt-3279" data-rv="tinted">
+          <div class="pw-grid" id="win-grid" data-fx="none" data-tint="default" data-hatch="off" data-shadow="on" data-backdrop="off">
+            <div class="pw-backdrop"></div>
+            <div class="pw-rows"></div>
+            <div class="pw-window-layer"><div class="pw-window" id="win-box"></div></div>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        <label style="display:inline-flex;gap:8px;align-items:center;cursor:pointer;margin-right:16px">
+          <input type="checkbox" id="c-shadow" checked> window shadow
+        </label>
+        <label style="display:inline-flex;gap:8px;align-items:center;cursor:pointer">
+          <input type="checkbox" id="c-bg2"> backdrop image
+        </label><br>
+        The backdrop here is a stand-in pattern; the product bundles three presets — <b>zos</b>, <b>mainframe</b> and <b>panels</b> — or takes any image file on your machine.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <p>Two things about the backdrop are deliberate. It is read from disk once and embedded in the panel, so <strong>a web address is not accepted</strong> and nothing is ever fetched over the network. And its opacity setting runs 0 to 1 but is <strong>hard-capped at 0.4</strong> — the backdrop can never be turned up far enough to make the text on top of it hard to read.</p>
+    </div>
+  </section>
+
+  <section id="attributes">
+    <div class="sec-head">
+      <div class="sec-key">§5 &nbsp; host-sent attributes &nbsp;·&nbsp; the effects Panelwright does not choose</div>
+      <h2>What the wire actually asks for</h2>
+    </div>
+    <div class="prose">
+      <p>Four of these are not Panelwright's idea at all. The host sets them, in an attribute byte or an <code>SA</code> order, and the client's only job is to render them — which is still a design decision, because "blink" on a CRT and "blink" in a browser are not the same thing.</p>
+    </div>
+
+    <figure>
+      <div class="screen-frame">
+        <div class="pw-screen" id="attr-screen" data-palette="crt-3279" data-rv="tinted">
+          <div class="pw-grid" data-fx="none" data-tint="off" data-hatch="off"><div class="pw-rows"></div></div>
+        </div>
+      </div>
+      <figcaption>The fifteen mappable colour names, then the four highlighting attributes. Blink is a real SGR blink in the terminal UI and a CSS animation in the panel — and it stops under reduced motion, in both.</figcaption>
+    </figure>
+  </section>
+
+  <section id="decorations">
+    <div class="sec-head">
+      <div class="sec-key">§6 &nbsp; hotspots, links, find, selection, countersign, the ended session</div>
+      <h2>Decorations that mean something</h2>
+    </div>
+    <div class="prose">
+      <p>These are visual, but they are not decoration: each one is the only way its affordance can announce itself. A real terminal has no hover event and no modifier-click, so the look <em>is</em> the documentation.</p>
+    </div>
+
+    <figure>
+      <div class="screen-frame">
+        <div class="pw-screen" id="deco-screen" data-palette="crt-3279" data-rv="tinted">
+          <div class="pw-grid" id="deco-grid" data-fx="none" data-tint="default" data-hatch="off"><div class="pw-rows"></div></div>
+        </div>
+      </div>
+      <figcaption>Hover the PF keys and the data set name. Both are underlined — one solid on hover, one dotted at rest.</figcaption>
+    </figure>
+
+    <div class="legend">
+      <div><b>hotspot</b><span>A pointer at rest, a solid underline on hover, in the palette's own interactive colour. One plain click transmits it.</span></div>
+      <div><b>Zowe link</b><span>Dotted and <em>always</em> visible, because this one needs a modifier to fire and CSS has no <code>:ctrl-held</code> selector. The dotted line is the whole hint.</span></div>
+      <div><b>find / current match</b><span>Amber-toned deliberately: no real 3270 ever had a find widget, so there is no authentic colour to port — and amber collides with none of the classic field hues.</span></div>
+      <div><b>proposed keystrokes</b><span>An agent's pending input under supervision, in warning amber with an inset outline. Not gated by any appearance setting: a countersign prompt is safety-relevant, not a preference.</span></div>
+      <div><b>OIA tone</b><span>Busy, warning and error each take their own colour from the palette, so the status strip reads before it is read.</span></div>
+      <div><b>session ended</b><span>Centred over the whole grid, dimming it. A first pass put the Close action at the far right of the status strip and the owner missed it entirely until told where to look.</span></div>
+    </div>
+
+    <figure style="margin-top:26px">
+      <div class="screen-frame">
+        <div class="pw-screen" data-palette="crt-3279">
+          <div class="pw-grid" data-fx="none" style="min-height:78px"><div class="pw-rows" id="ended-rows"></div>
+            <div class="pw-ended"><div class="pw-ended-card"><span>Session &ldquo;tk5dev&rdquo; ended.</span><span class="mono" style="font-size:11px;color:var(--ink-3)">the host closed the connection</span></div></div>
+          </div>
+          <div class="pw-oia"><span class="tone-error">X Disconnected</span><span class="grow"></span><span class="pos">&mdash;&mdash;/&mdash;&mdash;&mdash;</span></div>
+        </div>
+      </div>
+    </figure>
+  </section>
+
+  <section id="tui">
+    <div class="sec-head">
+      <div class="sec-key">§7 &nbsp; <b>panelwright ui</b> &nbsp;·&nbsp; <b>--theme</b> &nbsp;·&nbsp; <b>--plain</b> &nbsp;·&nbsp; <b>--highlight-fields</b></div>
+      <h2>The terminal UI answers differently</h2>
+    </div>
+    <div class="prose">
+      <p>The same screen in a terminal is not the same problem. There is no CSS, no canvas and no guarantee about what the user's palette contains — so the terminal UI makes deliberately different choices, and one of them is the opposite of the panel's.</p>
+    </div>
+
+    <div class="tui-row">
+      <div class="tui-box">
+        <header>--theme default</header>
+        <div class="tui-term t-dark" id="tui-default"></div>
+      </div>
+      <div class="tui-box">
+        <header>--theme 3279</header>
+        <div class="tui-term t-dark" id="tui-3279"></div>
+      </div>
+      <div class="tui-box">
+        <header>--plain / NO_COLOR</header>
+        <div class="tui-term t-plain" id="tui-plain"></div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p><code>default</code> uses <strong>basic ANSI 16 only</strong>, so your own terminal's palette decides the actual hue — a deliberate refusal to override the environment. <code>3279</code> forces a black background and 256-colour approximations of the real hues. <code>--plain</code> and <code>NO_COLOR</code> emit <em>zero</em> escape codes of any kind, fall back to ASCII frame characters, and always win over <code>--theme</code>; the environment variable is honoured whatever its value, even empty, because its mere presence is the standard's own trigger.</p>
+      <p><strong>The editable-field highlight underlines, where the panel tints.</strong> Not an inconsistency: the panel's ground is free, but a terminal's background is the one channel a host can genuinely claim with an <code>SA</code> order, and a tint would fight it. That highlight is a plain on/off — it was briefly a three-way <code>smart</code>/<code>all</code>/<code>none</code> cycle, and the owner's acceptance test failed <code>smart</code> outright.</p>
+      <p><strong>The cursor is hand-drawn in both</strong>, for different reasons. A real terminal hardware cursor was built for insert mode and then removed: Ink erases its previous frame <em>relatively</em>, counting rows up from wherever it last left the terminal cursor, so an app-managed cursor that moves to an absolute position outside that bookkeeping makes the next erase start from the wrong row. Measured in a real PTY, three runs: every frame rendered twice. Under <code>--plain</code> the cursor stops blinking and becomes a solid block character substituted into the text — a marker that never vanishes, with no escape codes at all.</p>
+    </div>
+  </section>
+
+  <section id="export">
+    <div class="sec-head">
+      <div class="sec-key">§8 &nbsp; <b>panelwright screen --format svg|ansi</b></div>
+      <h2>Taking the look with you</h2>
+    </div>
+    <div class="prose">
+      <p>The renderer is shared, so a captured screen keeps its colours rather than degrading to text:</p>
+      <p><code>panelwright screen --format svg --background '#0b0b0d' --out panel.svg</code></p>
+      <p><code>--format ansi</code> writes the escape codes instead, for a terminal or a paste into a log. Both take <code>--out</code>, and the SVG's background is a real choice — <code>none</code> for a transparent canvas, a hex colour, or the default opaque terminal black. One trap worth knowing: rendering an SVG immediately after connecting can capture an empty buffer, because the export can outrun the host's first paint.</p>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="sec-head">
+      <div class="sec-key">§9 &nbsp; the constraints every one of them obeys</div>
+      <h2>Four rules hold the whole layer</h2>
+    </div>
+    <div class="rules">
+      <div class="rule-item">
+        <h3>Appearance only</h3>
+        <p>Not one effect changes what you type, what is sent, or what the host is told. The wire is identical with every setting on and every setting off — which is what makes the whole layer safe to ship on by default.</p>
+      </div>
+      <div class="rule-item">
+        <h3>Motion yields</h3>
+        <p>Every animated effect turns itself off when the operating system asks for reduced motion — including host-sent blink. <code>crosshair</code> is the exception that proves it: it is exempt because there is no motion in it to reduce.</p>
+      </div>
+      <div class="rule-item">
+        <h3>Legibility has a floor, not a slider</h3>
+        <p>The backdrop caps at 0.4 however high you set it. The raster's halation spills only vertically, never sideways, so it cannot wash out the characters either side. A cosmetic setting is not allowed to make the screen unreadable.</p>
+      </div>
+      <div class="rule-item">
+        <h3>Plain always wins</h3>
+        <p><code>--plain</code> and <code>NO_COLOR</code> beat every theme, and are startup-only in both directions: once a run starts plain, there is no command to leave it, and no command to enter it mid-session either.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Other pages: <a href="intro.html">Introduction</a>, <a href="why.html">Why Panelwright</a>, <a href="making-of.html">The Making of Panelwright</a>. Values on this page are read from <code class="mono">packages/vscode/src/screen/palette.ts</code>, <code class="mono">src/webview/cursorEffectMath.ts</code>, <code class="mono">package.json</code>'s contributed settings and <code class="mono">packages/tui/README.md</code>. The demos re-implement the real CSS and the real tunings; they are not a recording of the product.
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var COLORS = ["blue","red","pink","green","turq","yellow","nwhite","black","dblue","orange","purple","pgreen","pturq","grey","white"];
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------------- panel data ----------------
+     seg = [text, colorName, flags]
+     flags: f=unprotected field, h=non-display, k=hotspot, z=zowe link,
+            b=intensified, u=underscore, r=reverse, n=blink,
+            F=find, C=current find match, S=selection, P=proposed         */
+
+  function pad(n) { var s = ""; while (s.length < n) s += " "; return s; }
+
+  /* Wraps each box-drawing/block glyph so it occupies exactly one cell,
+     whatever face the browser fell back to for it. */
+  function boxify(s) {
+    return s.replace(/[\u2500-\u259F]/g, function (c) { return '<span class="bx">' + c + "</span>"; });
+  }
+
+  var ISPF_COLS = 62;
+  var ISPF = [
+    [["  ","grey"],["Menu","nwhite","k"],["  ","grey"],["RefList","nwhite","k"],["  ","grey"],["RefMode","nwhite","k"],["  ","grey"],["Utilities","nwhite","k"],["  ","grey"],["Help","nwhite","k"]],
+    [[new Array(ISPF_COLS + 1).join("─"),"blue"]],
+    [["                     Data Set List Utility","nwhite","b"]],
+    [["Option ===> ","green"],["","turq","f",46]],
+    [],
+    [["   blank","nwhite"],[" Display data set list      ","green"],["P","nwhite"],["  Print data set list","green"]],
+    [["       V","nwhite"],[" Display VTOC information   ","green"],["PV","nwhite"],[" Print VTOC information","green"]],
+    [],
+    [["Enter one or both of the parameters below:","green"]],
+    [["  Dsname Level  . . . ","green"],["HERC03.**","turq","f",34]],
+    [["  Volume serial . . . ","green"],["","turq","f",8]],
+    [["  Recent  . . . . . . ","green"],["HERC03.ISPF.ISPPROF","turq","z"]],
+    [],
+    [["Data set list options","nwhite","b"]],
+    [["  Initial View  . . . ","green"],["1","turq","f",1],["   1. Volume    3. Space","green"]],
+    [["                            2. Attrib    4. Total","green"]],
+    [["  ","green"],["/","turq","f",1],[" Confirm Data Set Delete","green"]],
+    [["F1=Help","blue","k"],["  ","blue"],["F3=Exit","blue","k"],["  ","blue"],["F10=Left","blue","k"],["  ","blue"],["F11=Right","blue","k"],["  ","blue"],["F12=Cancel","blue","k"]]
+  ];
+
+  var LOGON_COLS = 62;
+  var LOGON = [
+    [["------------------------- ","blue"],["TSO/E LOGON","nwhite","b"],[" -------------------------","blue"]],
+    [],
+    [["   Enter LOGON parameters below:","green"]],
+    [["   Userid    ===> ","green"],["HERC03","turq","f",8]],
+    [["   Password  ===> ","green"],["CUL8TR","turq","fh",8]],
+    [["   Procedure ===> ","green"],["IKJACCNT","turq","f",8]],
+    [["   Acct Nmbr ===> ","green"],["ACCT#","turq","f",8]],
+    [["   Size      ===> ","green"],["4096","turq","f",8]],
+    [],
+    [["   PF1 ==> Help   PF3 ==> Logoff   PA1 ==> Attention","blue"]]
+  ];
+
+  var RV_COLS = 62;
+  var RV = [
+    [["  Reverse video, as the host asks for it:","green"]],
+    [],
+    [["  ","grey"],[" ENTER REQUIRED ","red","r"],["   ","grey"],[" HOLD ","yellow","r"],["   ","grey"],[" ROW 00001 OF 00042 ","turq","r"]],
+    [["  ","grey"],[" *** BOTTOM OF DATA *** ","nwhite","r"]]
+  ];
+
+  var ATTR_COLS = 62;
+  var ATTR = (function () {
+    var rows = [[["  The fifteen mappable colour names","nwhite","b"]], []];
+    var line1 = [["  ","grey"]], line2 = [["  ","grey"]];
+    for (var i = 0; i < 8; i++) line1.push([" " + ("      " + COLORS[i]).slice(-6), COLORS[i]]);
+    for (var j = 8; j < 15; j++) line2.push([" " + ("      " + COLORS[j]).slice(-6), COLORS[j]]);
+    rows.push(line1); rows.push(line2); rows.push([]);
+    rows.push([["  Highlighting","nwhite","b"]]);
+    rows.push([]);
+    rows.push([["  ","grey"],["normal","green"],["      ","grey"],["INTENSIFIED","green","b"],["      ","grey"],["underscored","green","u"],["      ","grey"],["reverse","green","r"],["      ","grey"],["blinking","green","n"]]);
+    return rows;
+  })();
+
+  var DECO_COLS = 62;
+  var DECO = [
+    [["  ","grey"],["F3=Exit","blue","k"],["   ","grey"],["F7=Up","blue","k"],["   ","grey"],["F8=Down","blue","k"],["      ","grey"],["HERC03.ISPF.ISPPROF","turq","z"]],
+    [],
+    [["  Search found ","green"],["ALLOC","green","C"],[" here and ","green"],["ALLOC","green","F"],[" there.","green"]],
+    [["  A dragged ","green"],["selection across cells","green","S"],[" reads as one range.","green"]],
+    [],
+    [["  Countersign: ","green"],["LISTC LEVEL(HERC03)","turq","P"],["","turq"]]
+  ];
+
+  var ENDED = [
+    [["  IKJ56455I HERC03 LOGGED OFF TSO AT 04:12:08 ON SEPTEMBER 12, 2026","green"]],
+    [],
+    [["  ","green"]]
+  ];
+
+  /* ---------------- renderer ---------------- */
+
+  function clsFor(seg) {
+    var flags = seg[2] || "";
+    var c = ["c-" + (seg[1] || "grey")];
+    if (flags.indexOf("f") >= 0) c.push("pw-field");
+    if (flags.indexOf("h") >= 0) c.push("pw-hidden");
+    if (flags.indexOf("k") >= 0) c.push("pw-hotspot");
+    if (flags.indexOf("z") >= 0) c.push("pw-zowe");
+    if (flags.indexOf("b") >= 0) c.push("pw-b");
+    if (flags.indexOf("u") >= 0) c.push("pw-u");
+    if (flags.indexOf("r") >= 0) c.push("pw-rev");
+    if (flags.indexOf("n") >= 0) c.push("pw-blink");
+    if (flags.indexOf("F") >= 0) c.push("pw-find");
+    if (flags.indexOf("C") >= 0) c.push("pw-find-current");
+    if (flags.indexOf("S") >= 0) c.push("pw-sel");
+    if (flags.indexOf("P") >= 0) c.push("pw-proposed");
+    return c.join(" ");
+  }
+
+  /* Builds a screen. Returns an API the bench uses and the static demos ignore. */
+  function makeScreen(rootEl, spec) {
+    var rowsHost = rootEl.querySelector(".pw-rows");
+    var grid = rootEl.querySelector(".pw-grid");
+    var cols = spec.cols;
+    var model = [];       // per row: array of {text, cls, flags, col, len, fieldId}
+    var fields = [];      // {row, col, len, text, hidden}
+    var api = {};
+
+    spec.rows.forEach(function (segs, r) {
+      var row = [], col = 0;
+      (segs || []).forEach(function (seg) {
+        var flags = seg[2] || "";
+        var isField = flags.indexOf("f") >= 0;
+        var len = isField ? (seg[3] || seg[0].length) : seg[0].length;
+        var text = seg[0];
+        if (isField) {
+          text = (text + pad(len)).slice(0, len);
+          fields.push({ row: r, col: col, len: len, text: text, hidden: flags.indexOf("h") >= 0, idx: fields.length });
+        }
+        row.push({ text: text, cls: clsFor(seg), flags: flags, col: col, len: len, fieldId: isField ? fields.length - 1 : -1 });
+        col += len;
+      });
+      if (col < cols) row.push({ text: pad(cols - col), cls: "c-grey", flags: "", col: col, len: cols - col, fieldId: -1 });
+      model.push(row);
+    });
+
+    var dots = true;
+    function cellText(cell) {
+      if (cell.fieldId < 0) return cell.text;
+      var f = fields[cell.fieldId];
+      if (!f.hidden) return f.text;
+      if (!dots) return pad(f.len);
+      var n = f.text.replace(/ +$/, "").length;
+      return (new Array(n + 1).join("•") + pad(f.len)).slice(0, f.len);
+    }
+
+    var cursor = { row: spec.cursor ? spec.cursor[0] : 0, col: spec.cursor ? spec.cursor[1] : 0 };
+
+    function paint() {
+      var html = "";
+      for (var r = 0; r < model.length; r++) {
+        var isCur = (r === cursor.row) && spec.cursorEnabled;
+        html += '<div class="pw-row' + (isCur ? " cur-line" : "") + '">';
+        for (var i = 0; i < model[r].length; i++) {
+          var cell = model[r][i];
+          var cls = cell.cls;
+          if (cell.fieldId >= 0) {
+            if (spec.cursorEnabled && cursor.row === r && cursor.col >= cell.col && cursor.col < cell.col + cell.len) cls += " act";
+            cls += " fld-" + cell.fieldId;
+          }
+          html += '<span class="' + cls + '" data-col="' + cell.col + '" data-fid="' + cell.fieldId + '">' +
+                  boxify(escapeHtml(cellText(cell))) + "</span>";
+        }
+        html += "</div>";
+      }
+      rowsHost.innerHTML = html;
+      measure();
+      placeCursor();
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    var cursorEl = rootEl.querySelector(".pw-cursor");
+    var metrics = { cw: 0, ch: 0 };
+    var ruler = document.createElement("span");
+    ruler.className = "pw-ruler";
+    ruler.textContent = "0000000000";
+    grid.appendChild(ruler);
+    function measure() {
+      var w = ruler.getBoundingClientRect().width / 10;
+      if (w > 0) metrics.cw = w;
+      var row = rowsHost.querySelector(".pw-row");
+      if (row) {
+        var h = row.getBoundingClientRect().height;
+        if (h > 0) metrics.ch = h;
+      }
+    }
+    function charAt(r, c) {
+      var row = model[r];
+      if (!row) return " ";
+      for (var i = 0; i < row.length; i++) {
+        var cell = row[i];
+        if (c >= cell.col && c < cell.col + cell.len) {
+          var t = cellText(cell);
+          return t.charAt(c - cell.col) || " ";
+        }
+      }
+      return " ";
+    }
+    function placeCursor() {
+      if (!cursorEl || !metrics.cw) return;
+      cursorEl.style.width = metrics.cw + "px";
+      cursorEl.style.height = metrics.ch + "px";
+      cursorEl.style.left = (cursor.col * metrics.cw) + "px";
+      cursorEl.style.top = (cursor.row * metrics.ch) + "px";
+      cursorEl.textContent = charAt(cursor.row, cursor.col);
+    }
+
+    api.model = model;
+    api.fields = fields;
+    api.cursor = cursor;
+    api.metrics = metrics;
+    api.grid = grid;
+    api.paint = paint;
+    api.place = placeCursor;
+    api.setDots = function (v) { dots = v; paint(); };
+    api.cols = cols;
+    api.rowCount = model.length;
+    api.fieldAt = function (r, c) {
+      for (var i = 0; i < fields.length; i++) {
+        var f = fields[i];
+        if (f.row === r && c >= f.col && c < f.col + f.len) return f;
+      }
+      return null;
+    };
+    api.typeChar = function (ch) {
+      var f = api.fieldAt(cursor.row, cursor.col);
+      if (!f) return false;
+      var k = cursor.col - f.col;
+      f.text = (f.text.slice(0, k) + ch + f.text.slice(k + 1)).slice(0, f.len);
+      if (cursor.col < f.col + f.len - 1) cursor.col++;
+      paint();
+      return true;
+    };
+    paint();
+    window.addEventListener("resize", function () { paint(); });
+    return api;
+  }
+
+  /* ---------------- static demos ---------------- */
+
+  makeScreen(document.getElementById("rv-screen"), { cols: RV_COLS, rows: RV, cursorEnabled: false });
+  makeScreen(document.getElementById("attr-screen"), { cols: ATTR_COLS, rows: ATTR, cursorEnabled: false });
+  var deco = makeScreen(document.getElementById("deco-screen"), { cols: DECO_COLS, rows: DECO, cursorEnabled: false });
+  (function () {
+    var host = document.getElementById("ended-rows");
+    if (host) {
+      host.innerHTML = ENDED.map(function (segs) {
+        return '<div class="pw-row">' + (segs.length ? segs.map(function (s) {
+          return '<span class="c-' + s[1] + '">' + s[0] + "</span>";
+        }).join("") : "&nbsp;") + "</div>";
+      }).join("");
+    }
+  })();
+
+  /* mark the proposed cursor cell in the decorations demo */
+  (function () {
+    var p = deco.grid.querySelector(".pw-proposed");
+    if (p) p.classList.add("pw-proposed-cursor");
+  })();
+
+  document.getElementById("c-rv").addEventListener("change", function (e) {
+    document.getElementById("rv-screen").setAttribute("data-rv", e.target.checked ? "classic" : "tinted");
+  });
+
+  /* ---------------- palette gallery ---------------- */
+
+  var PALETTES = [
+    { id: "editor", desc: "Follows your VS Code theme: the twelve chromatic colours come from the theme's own terminal palette, so the grid tracks light, dark and high-contrast like the rest of the editor." },
+    { id: "3279", desc: "The authentic look, forced regardless of theme. Vivid hues on black — ported from the terminal UI's table, not re-chosen, so both surfaces show the same screen." },
+    { id: "3279-light", desc: "The same colours adjusted to hold contrast on a light ground. White becomes a dark neutral, because white means brightest." },
+    { id: "crt-3279", desc: "The classic seven softened a step on a charcoal ground, with a faint bloom on every glyph. A remembered terminal rather than a test pattern." },
+    { id: "phosphor-green", desc: "A 3278 green-phosphor tube: one green in three intensities, colour attributes become brightness, reverse video a solid block." }
+  ];
+  var SAMPLE_COLS = 46;
+  var SAMPLE = [
+    [["  ","grey"],["Menu","nwhite","k"],["  ","grey"],["Utilities","nwhite","k"],["  ","grey"],["Help","nwhite","k"]],
+    [[new Array(SAMPLE_COLS + 1).join("─"),"blue"]],
+    [["        Data Set List Utility","nwhite","b"]],
+    [["Option ===> ","green"],["","turq","f",30]],
+    [["  Dsname  . . . ","green"],["HERC03.**","turq","f",22]],
+    [["  Volume  . . . ","green"],["","turq","f",8]],
+    [["  ","grey"],[" ENTER REQUIRED ","red","r"],["  ","grey"],["3.4","yellow"]]
+  ];
+
+  (function () {
+    var host = document.getElementById("pal-gallery");
+    PALETTES.forEach(function (p) {
+      var card = document.createElement("div");
+      card.className = "pal-card";
+      card.innerHTML =
+        '<div class="screen-frame"><div class="pw-screen" data-palette="' + p.id + '" data-rv="tinted">' +
+        '<div class="pw-grid" data-fx="none" data-tint="default" data-hatch="soft"><div class="pw-rows"></div></div>' +
+        '</div></div>' +
+        '<div class="pal-meta"><div class="pal-name">' + p.id + '</div>' +
+        '<div class="swatches"></div>' +
+        '<div class="pal-desc">' + p.desc + "</div></div>";
+      host.appendChild(card);
+      makeScreen(card.querySelector(".pw-screen"), { cols: SAMPLE_COLS, rows: SAMPLE, cursorEnabled: false });
+      var sw = card.querySelector(".swatches");
+      COLORS.forEach(function (c) {
+        var i = document.createElement("i");
+        i.style.background = "var(--c-" + c + ")";
+        i.title = c;
+        sw.appendChild(i);
+      });
+      sw.setAttribute("data-palette", p.id);
+      card.querySelector(".pal-meta").setAttribute("data-palette", p.id);
+    });
+  })();
+
+  /* ---------------- TSO logon (field marking) ---------------- */
+
+  var logon = makeScreen(document.getElementById("logon-screen"), {
+    cols: LOGON_COLS, rows: LOGON, cursorEnabled: true, cursor: [4, 21]
+  });
+  var lg = document.getElementById("logon-grid");
+  function lgSync() {
+    lg.setAttribute("data-tint", document.getElementById("l-tint").checked
+      ? (document.getElementById("l-strong").checked ? "strong" : "default") : "off");
+    lg.setAttribute("data-hatch", document.getElementById("l-hatch").checked
+      ? (document.getElementById("l-medium").checked ? "medium" : "soft") : "off");
+    logon.setDots(document.getElementById("l-dots").checked);
+  }
+  ["l-tint", "l-strong", "l-hatch", "l-medium", "l-dots"].forEach(function (id) {
+    document.getElementById(id).addEventListener("change", lgSync);
+  });
+  lgSync();
+  logon.grid.addEventListener("mouseover", hoverHandler(logon));
+  logon.grid.addEventListener("mouseout", hoverOut(logon));
+
+  /* ---------------- window-shadow demo ---------------- */
+
+  var WIN_COLS = 62;
+  var WIN = [
+    [["  Menu  Utilities  Help","nwhite"]],
+    [[new Array(WIN_COLS + 1).join("─"),"blue"]],
+    [["                  Data Set List Utility","nwhite","b"]],
+    [["Option ===> ","green"],["","turq","f",46]],
+    [],
+    [["   blank Display data set list","green"]],
+    [["       V Display VTOC information","green"]],
+    [],
+    [["Enter one or both of the parameters below:","green"]],
+    [["  Dsname Level  . . . ","green"],["HERC03.**","turq","f",34]],
+    [["  Volume serial . . . ","green"],["","turq","f",8]],
+    []
+  ];
+  var winScreen = makeScreen(document.getElementById("win-screen"), { cols: WIN_COLS, rows: WIN, cursorEnabled: false });
+  (function () {
+    var box = document.getElementById("win-box");
+    var W = 26;
+    function bar(n) { return new Array(n + 1).join("─"); }
+    function mid(t) { return "│" + (t + pad(W)).slice(0, W) + "│"; }
+    var head = "─ Confirm Delete ";
+    var lines = [
+      "┌" + head + bar(W - head.length) + "┐",
+      mid(""),
+      mid("  Delete HERC03.PANEL?"),
+      mid(""),
+      mid("  ENTER to confirm"),
+      mid("  PF3 to cancel"),
+      "└" + bar(W) + "┘"
+    ];
+    function layout() {
+      var m = winScreen.metrics;
+      if (!m.cw) return;
+      box.style.left = (30 * m.cw) + "px";
+      box.style.top = (4 * m.ch) + "px";
+      box.style.fontSize = "inherit";
+      box.innerHTML = boxify(lines.join("\n"));
+      box.style.lineHeight = "1.2";
+    }
+    layout();
+    window.addEventListener("resize", layout);
+    setTimeout(layout, 120);
+    document.getElementById("c-shadow").addEventListener("change", function (e) {
+      document.getElementById("win-grid").setAttribute("data-shadow", e.target.checked ? "on" : "off");
+    });
+    document.getElementById("c-bg2").addEventListener("change", function (e) {
+      document.getElementById("win-grid").setAttribute("data-backdrop", e.target.checked ? "on" : "off");
+    });
+  })();
+
+  /* ---------------- hover marking, shared ---------------- */
+
+  function hoverHandler(api) {
+    return function (e) {
+      var t = e.target;
+      if (!t || !t.getAttribute) return;
+      var fid = t.getAttribute("data-fid");
+      api.grid.querySelectorAll(".hov").forEach(function (n) { n.classList.remove("hov"); });
+      if (fid && fid !== "-1") {
+        api.grid.querySelectorAll(".fld-" + fid).forEach(function (n) { n.classList.add("hov"); });
+      }
+    };
+  }
+  function hoverOut(api) {
+    return function () {
+      api.grid.querySelectorAll(".hov").forEach(function (n) { n.classList.remove("hov"); });
+    };
+  }
+
+  /* ---------------- the cursor-effect engine ----------------
+     One engine per screen; a single shared rAF drives whichever of them have
+     anything left to animate, so ten tiles cost one frame loop, not ten. */
+
+  var FIRE = {
+    subtle: { radius: 1.0, spawnBase: 0, spawnExtra: 0.5, max: 24, alpha: 0.5, rise: 14, vy0: -1.1, vySpan: 0.7 },
+    normal: { radius: 1.4, spawnBase: 1, spawnExtra: 0, max: 48, alpha: 0.7, rise: 20, vy0: -1.3, vySpan: 0.8 },
+    strong: { radius: 2.0, spawnBase: 1, spawnExtra: 0.35, max: 90, alpha: 0.85, rise: 30, vy0: -1.5, vySpan: 0.9 }
+  };
+  var SPARKLE = { radius: 1.4, min: 4, span: 3, alpha: 0.7, speed: 0.85 };
+  var TRAIL = { alpha: 0.26, lifetimeMs: 165 };
+  var CROSSHAIR = { alpha: 0.24, readoutAlpha: 0.7, readoutFontPx: 10 };
+  var CHAD = { min: 4, span: 3, size: 2.1, alpha: 0.7, gravity: 0.11, decay: 0.975, max: 60 };
+  var PHOSPHOR = { lifeMs: 4000, alpha: 0.14, max: 120 };
+  var BEAM = { width: 1.5, lifeMs: 260, alpha: 0.55, headRadius: 1.8, max: 24 };
+  var FIRE_HOT = [255, 230, 120], FIRE_COOL = [200, 40, 10];
+
+  var ENGINES = [], ticker = 0;
+  function startTicker() {
+    if (ticker || reduceMotion) return;
+    ticker = requestAnimationFrame(function tickAll() {
+      ticker = 0;
+      var live = false;
+      for (var i = 0; i < ENGINES.length; i++) {
+        if (ENGINES[i].needsFrame()) { ENGINES[i].step(); ENGINES[i].draw(); live = true; }
+      }
+      if (live) startTicker();
+    });
+  }
+  function rgba(c, a) { return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + a + ")"; }
+
+  function createEngine(api, screenEl) {
+    var canvas = api.grid.querySelector(".pw-fx-canvas");
+    var ctx = canvas.getContext("2d");
+    var eng = {
+      effect: "none", fireLevel: "normal",
+      parts: [], ghosts: [], beams: [], rgb: [80, 224, 106], dpr: 1, showReadout: true
+    };
+
+    eng.readColor = function () {
+      var probe = getComputedStyle(api.grid).getPropertyValue("--pw-cursor-bg").trim();
+      var m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(probe);
+      if (m) eng.rgb = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
+    };
+    function bgIsDark() {
+      var m = /rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/.exec(getComputedStyle(screenEl).backgroundColor);
+      if (!m) return true;
+      return (0.299 * +m[1] + 0.587 * +m[2] + 0.114 * +m[3]) / 255 < 0.5;
+    }
+    eng.size = function () {
+      var rows = api.grid.querySelector(".pw-rows");
+      if (!rows) return;
+      var r = rows.getBoundingClientRect();
+      eng.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.round(r.width * eng.dpr));
+      canvas.height = Math.max(1, Math.round(r.height * eng.dpr));
+      canvas.style.width = r.width + "px";
+      canvas.style.height = r.height + "px";
+    };
+    function cellRect(row, col) {
+      var m = api.metrics;
+      return { x: col * m.cw, y: row * m.ch, w: m.cw, h: m.ch };
+    }
+    eng.needsFrame = function () {
+      return eng.effect === "fire" || eng.parts.length > 0 || eng.ghosts.length > 0 || eng.beams.length > 0;
+    };
+    eng.setEffect = function (v) {
+      eng.effect = v;
+      api.grid.setAttribute("data-fx", v);
+      eng.parts.length = 0; eng.ghosts.length = 0; eng.beams.length = 0;
+      eng.readColor();
+      eng.draw();
+      startTicker();
+    };
+    eng.notify = function (from, to, typed) {
+      if (reduceMotion) { eng.draw(); return; }
+      var moved = from[0] !== to[0] || from[1] !== to[1];
+      var i, n, r, cx, cy;
+      if (eng.effect === "sparkle" && (moved || typed)) {
+        r = cellRect(to[0], to[1]); cx = r.x + r.w / 2; cy = r.y + r.h / 2;
+        n = SPARKLE.min + Math.floor(Math.random() * SPARKLE.span);
+        for (i = 0; i < n; i++) {
+          var a = Math.random() * Math.PI * 2, sp = (0.6 + Math.random()) * SPARKLE.speed;
+          eng.parts.push({ k: "s", x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, a: SPARKLE.alpha });
+        }
+      }
+      if (eng.effect === "chad" && moved) {
+        r = cellRect(from[0], from[1]); cx = r.x + r.w / 2; cy = r.y + r.h / 2;
+        n = CHAD.min + Math.floor(Math.random() * CHAD.span);
+        for (i = 0; i < n; i++) {
+          eng.parts.push({ k: "c", x: cx, y: cy, vx: (Math.random() - 0.5) * 1.6, vy: -0.6 - Math.random() * 0.9,
+                           a: CHAD.alpha, rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.25 });
+        }
+        if (eng.parts.length > CHAD.max) eng.parts.splice(0, eng.parts.length - CHAD.max);
+      }
+      if (eng.effect === "trail" && moved) {
+        eng.ghosts.push({ row: from[0], col: from[1], born: performance.now(), life: TRAIL.lifetimeMs, a0: TRAIL.alpha });
+      }
+      if (eng.effect === "phosphor" && moved) {
+        eng.ghosts.push({ row: from[0], col: from[1], born: performance.now(), life: PHOSPHOR.lifeMs, a0: PHOSPHOR.alpha });
+        if (eng.ghosts.length > PHOSPHOR.max) eng.ghosts.splice(0, eng.ghosts.length - PHOSPHOR.max);
+      }
+      if (eng.effect === "beam" && moved) {
+        eng.beams.push({ from: from.slice(), to: to.slice(), born: performance.now() });
+        if (eng.beams.length > BEAM.max) eng.beams.splice(0, eng.beams.length - BEAM.max);
+      }
+      startTicker();
+      eng.draw();
+    };
+    eng.step = function () {
+      var i, p;
+      if (eng.effect === "fire" && !reduceMotion) {
+        var t = FIRE[eng.fireLevel];
+        var spawn = t.spawnBase + (Math.random() < t.spawnExtra ? 1 : 0);
+        var r = cellRect(api.cursor.row, api.cursor.col);
+        for (i = 0; i < spawn; i++) {
+          eng.parts.push({ k: "f", x: r.x + Math.random() * r.w, y: r.y + r.h * 0.85,
+                           vx: (Math.random() - 0.5) * 0.35, vy: t.vy0 + Math.random() * t.vySpan,
+                           a: t.alpha, life: 1, rise: t.rise });
+        }
+        if (eng.parts.length > t.max) eng.parts.splice(0, eng.parts.length - t.max);
+      }
+      for (i = eng.parts.length - 1; i >= 0; i--) {
+        p = eng.parts[i];
+        if (p.k === "f") {
+          p.x += p.vx; p.y += p.vy; p.vy *= 0.96; p.life -= 1 / (p.rise / 1.2);
+          if (p.life <= 0) eng.parts.splice(i, 1);
+        } else if (p.k === "s") {
+          p.x += p.vx; p.y += p.vy; p.vy += 0.045; p.a *= 0.93;
+          if (p.a < 0.03) eng.parts.splice(i, 1);
+        } else {
+          p.x += p.vx; p.y += p.vy; p.vy += CHAD.gravity; p.rot += p.vr; p.a *= CHAD.decay;
+          if (p.a < 0.03) eng.parts.splice(i, 1);
+        }
+      }
+      var now = performance.now();
+      for (i = eng.ghosts.length - 1; i >= 0; i--) if (now - eng.ghosts[i].born > eng.ghosts[i].life) eng.ghosts.splice(i, 1);
+      for (i = eng.beams.length - 1; i >= 0; i--) if (now - eng.beams[i].born > BEAM.lifeMs) eng.beams.splice(i, 1);
+    };
+    eng.draw = function () {
+      if (!api.metrics.cw) return;
+      ctx.setTransform(eng.dpr, 0, 0, eng.dpr, 0, 0);
+      var w = canvas.width / eng.dpr, h = canvas.height / eng.dpr;
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = "source-over";
+      var i, p, now = performance.now();
+
+      if (eng.effect === "crosshair") {
+        var r = cellRect(api.cursor.row, api.cursor.col);
+        ctx.strokeStyle = rgba(eng.rgb, CROSSHAIR.alpha);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, Math.round(r.y + r.h / 2) + 0.5); ctx.lineTo(w, Math.round(r.y + r.h / 2) + 0.5);
+        ctx.moveTo(Math.round(r.x + r.w / 2) + 0.5, 0); ctx.lineTo(Math.round(r.x + r.w / 2) + 0.5, h);
+        ctx.stroke();
+        if (eng.showReadout) {
+          ctx.globalAlpha = CROSSHAIR.readoutAlpha;
+          ctx.fillStyle = rgba(eng.rgb, 1);
+          ctx.font = CROSSHAIR.readoutFontPx + 'px "IBM Plex Mono", monospace';
+          ctx.textAlign = "right";
+          ctx.fillText("row " + (api.cursor.row + 1) + "  col " + (api.cursor.col + 1), w - 2, 11);
+          ctx.globalAlpha = 1;
+          ctx.textAlign = "left";
+        }
+        return;
+      }
+      if (reduceMotion) return;
+
+      if (eng.effect === "phosphor" && bgIsDark()) ctx.globalCompositeOperation = "lighter";
+      for (i = 0; i < eng.ghosts.length; i++) {
+        var g = eng.ghosts[i];
+        var k = 1 - (now - g.born) / g.life;
+        if (k <= 0) continue;
+        var gr = cellRect(g.row, g.col);
+        ctx.fillStyle = rgba(eng.rgb, g.a0 * k);
+        ctx.fillRect(gr.x, gr.y, gr.w, gr.h);
+      }
+      ctx.globalCompositeOperation = "source-over";
+
+      for (i = 0; i < eng.beams.length; i++) {
+        var b = eng.beams[i];
+        var kk = 1 - (now - b.born) / BEAM.lifeMs;
+        if (kk <= 0) continue;
+        var f0 = cellRect(b.from[0], b.from[1]), t0 = cellRect(b.to[0], b.to[1]);
+        var x0 = f0.x + f0.w / 2, y0 = f0.y + f0.h / 2, x1 = t0.x + t0.w / 2, y1 = t0.y + t0.h / 2;
+        ctx.strokeStyle = rgba(eng.rgb, BEAM.alpha * kk);
+        ctx.lineWidth = BEAM.width;
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+        var hp = 1 - kk;
+        ctx.fillStyle = rgba(eng.rgb, Math.min(1, BEAM.alpha * kk + 0.25));
+        ctx.beginPath();
+        ctx.arc(x0 + (x1 - x0) * hp, y0 + (y1 - y0) * hp, BEAM.headRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (i = 0; i < eng.parts.length; i++) {
+        p = eng.parts[i];
+        if (p.k === "f") {
+          var mix = Math.max(0, Math.min(1, 1 - p.life));
+          ctx.fillStyle = "rgba(" +
+            Math.round(FIRE_HOT[0] + (FIRE_COOL[0] - FIRE_HOT[0]) * mix) + "," +
+            Math.round(FIRE_HOT[1] + (FIRE_COOL[1] - FIRE_HOT[1]) * mix) + "," +
+            Math.round(FIRE_HOT[2] + (FIRE_COOL[2] - FIRE_HOT[2]) * mix) + "," + (p.a * p.life) + ")";
+          ctx.beginPath(); ctx.arc(p.x, p.y, FIRE[eng.fireLevel].radius, 0, Math.PI * 2); ctx.fill();
+        } else if (p.k === "s") {
+          ctx.fillStyle = rgba(eng.rgb, p.a);
+          ctx.beginPath(); ctx.arc(p.x, p.y, SPARKLE.radius, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = rgba(eng.rgb, p.a);
+          ctx.fillRect(-CHAD.size, -CHAD.size * 0.62, CHAD.size * 2, CHAD.size * 1.24);
+          ctx.restore();
+        }
+      }
+    };
+    ENGINES.push(eng);
+    return eng;
+  }
+
+  /* ---------------- the bench ---------------- */
+
+  var bench = makeScreen(document.getElementById("bench-screen"), {
+    cols: ISPF_COLS, rows: ISPF, cursorEnabled: true, cursor: [3, 12]
+  });
+  var benchScreenEl = document.getElementById("bench-screen");
+  var bg = document.getElementById("bench-grid");
+  var engine = createEngine(bench, benchScreenEl);
+  var posEl = document.getElementById("bench-pos");
+  var lockEl = document.getElementById("bench-lock");
+
+  bench.grid.addEventListener("mouseover", hoverHandler(bench));
+  bench.grid.addEventListener("mouseout", hoverOut(bench));
+
+  function syncOia() {
+    posEl.textContent = String(bench.cursor.row + 1).padStart(2, "0") + "/" +
+                        String(bench.cursor.col + 1).padStart(3, "0");
+    var f = bench.fieldAt(bench.cursor.row, bench.cursor.col);
+    lockEl.textContent = f ? "" : "✕ Protected";
+    lockEl.className = f ? "tone-busy" : "tone-warn";
+  }
+
+  function moveTo(r, c, typed) {
+    var from = [bench.cursor.row, bench.cursor.col];
+    bench.cursor.row = Math.max(0, Math.min(bench.rowCount - 1, r));
+    bench.cursor.col = Math.max(0, Math.min(bench.cols - 1, c));
+    bench.paint();
+    syncOia();
+    engine.notify(from, [bench.cursor.row, bench.cursor.col], typed);
+  }
+
+  bench.grid.addEventListener("mousedown", function (e) {
+    var rowsRect = bench.grid.querySelector(".pw-rows").getBoundingClientRect();
+    if (!bench.metrics.cw) return;
+    var c = Math.floor((e.clientX - rowsRect.left) / bench.metrics.cw);
+    var r = Math.floor((e.clientY - rowsRect.top) / bench.metrics.ch);
+    if (r < 0 || r >= bench.rowCount) return;
+    stopAuto();
+    moveTo(r, c, false);
+    bench.grid.focus();
+  });
+
+  bench.grid.addEventListener("keydown", function (e) {
+    var k = e.key, cur = bench.cursor, handled = true;
+    if (k === "ArrowLeft") moveTo(cur.row, cur.col - 1, false);
+    else if (k === "ArrowRight") moveTo(cur.row, cur.col + 1, false);
+    else if (k === "ArrowUp") moveTo(cur.row - 1, cur.col, false);
+    else if (k === "ArrowDown") moveTo(cur.row + 1, cur.col, false);
+    else if (k === "Tab") { e.preventDefault(); nextField(e.shiftKey ? -1 : 1); }
+    else if (k === "Backspace") {
+      if (cur.col > 0) {
+        moveTo(cur.row, cur.col - 1, false);
+        var bf = bench.fieldAt(cur.row, cur.col);
+        if (bf) {
+          var bi = cur.col - bf.col;
+          bf.text = (bf.text.slice(0, bi) + " " + bf.text.slice(bi + 1)).slice(0, bf.len);
+          bench.paint();
+        }
+      }
+    }
+    else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      var from = [cur.row, cur.col];
+      if (bench.typeChar(k)) { syncOia(); engine.notify(from, [cur.row, cur.col], true); }
+    } else handled = false;
+    if (handled) { e.preventDefault(); stopAuto(); }
+  });
+
+  function nextField(dir) {
+    var fs = bench.fields;
+    if (!fs.length) return;
+    var best = null, cur = bench.cursor;
+    var curKey = cur.row * 1000 + cur.col;
+    for (var i = 0; i < fs.length; i++) {
+      var key = fs[i].row * 1000 + fs[i].col;
+      if (dir > 0 ? key > curKey : key < curKey) {
+        if (best === null || (dir > 0 ? key < best.row * 1000 + best.col : key > best.row * 1000 + best.col)) best = fs[i];
+      }
+    }
+    if (!best) best = dir > 0 ? fs[0] : fs[fs.length - 1];
+    moveTo(best.row, best.col, false);
+  }
+
+  var autoTimer = 0, autoIdx = 0;
+  var autoStops = [[3, 12], [9, 22], [9, 31], [10, 22], [14, 22], [16, 2], [3, 20], [3, 12]];
+  function clearAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = 0; } }
+  function startAuto() {
+    clearAuto();
+    if (reduceMotion) return;
+    autoTimer = setInterval(function () {
+      autoIdx = (autoIdx + 1) % autoStops.length;
+      moveTo(autoStops[autoIdx][0], autoStops[autoIdx][1], false);
+    }, 1700);
+  }
+  function stopAuto() {
+    clearAuto();
+    var cb = document.getElementById("c-auto");
+    if (cb) cb.checked = false;
+  }
+
+  var NOTES = {
+    none: "<b>none</b> is the default the product ships. Everything here is opt-in.",
+    pulse: "<b>pulse</b> — a soft breathing glow, 2s ease-in-out. Pure CSS: no canvas is ever created, so it costs nothing per frame.",
+    raster: "<b>raster</b> — scanlines, a mains flicker at 0.14s, and halation that spills <i>vertically only</i>. A symmetric blur would wash out the characters either side, which is the complaint the retune existed to fix.",
+    crosshair: "<b>crosshair</b> — the quietest of the nine, and the only one that is information rather than decoration. It never animates, so reduced motion leaves it alone.",
+    fire: "<b>fire</b> — the one effect with a knob. Embers cool from #ffe678 to #c8280a as they rise; at <i>normal</i> you can still read the line above the cursor through them.",
+    sparkle: "<b>sparkle</b> — 4 to 6 sparks per burst, then it settles. Type into a field to fire it.",
+    trail: "<b>trail</b> — a ghost at 26% alpha for 165 ms. Short on purpose: it marks the jump, it does not linger.",
+    chad: "<b>chad</b> — rectangles, two wide by one and a quarter tall, the proportions of a real card punching. Rectangles rather than circles is the whole point of it next to sparkle.",
+    phosphor: "<b>phosphor</b> — four seconds at 14% alpha, blended additively on a dark ground so a ghost brightens the character under it instead of covering it. Try a light palette: the blend mode changes.",
+    beam: "<b>beam</b> — 260 ms, with a head travelling from the old cell to the new one. It draws the connection a jump makes, which trail's per-cell stamps cannot."
+  };
+  var noteEl = document.getElementById("fx-note");
+  var fireCtl = document.getElementById("fire-ctl");
+
+  function setEffect(v) {
+    noteEl.innerHTML = NOTES[v];
+    fireCtl.style.display = v === "fire" ? "" : "none";
+    engine.setEffect(v);
+  }
+
+  document.getElementById("c-fx").addEventListener("change", function (e) { setEffect(e.target.value); });
+  document.getElementById("c-fire").addEventListener("change", function (e) { engine.fireLevel = e.target.value; });
+  document.getElementById("c-pal").addEventListener("change", function (e) {
+    benchScreenEl.setAttribute("data-palette", e.target.value);
+    setTimeout(function () { engine.readColor(); engine.draw(); }, 30);
+  });
+  document.getElementById("c-tint").addEventListener("change", function (e) { bg.setAttribute("data-tint", e.target.value); });
+  document.getElementById("c-active").addEventListener("change", function (e) { bg.setAttribute("data-mark-active", e.target.checked ? "on" : "off"); });
+  document.getElementById("c-hover").addEventListener("change", function (e) { bg.setAttribute("data-hover", e.target.checked ? "on" : "off"); });
+  document.getElementById("c-line").addEventListener("change", function (e) { bg.setAttribute("data-current-line", e.target.checked ? "on" : "off"); });
+  document.getElementById("c-backdrop").addEventListener("change", function (e) { bg.setAttribute("data-backdrop", e.target.checked ? "on" : "off"); });
+  document.getElementById("c-auto").addEventListener("change", function (e) { if (e.target.checked) startAuto(); else clearAuto(); });
+
+  /* ---------------- all nine, side by side ---------------- */
+
+  /* A taller tile with stops at opposite corners: trail (165 ms) and beam
+     (260 ms) have nothing to draw between adjacent cells, and at one move per
+     second every transient effect is invisible most of the time. */
+  var TILE_COLS = 18;
+  var TILE = [
+    [],
+    [[" Option ==> ","green"],["","turq","f",6]],
+    [],
+    [[" Dsname ==> ","green"],["SYS1.","turq","f",6]],
+    [[" Volume ==> ","green"],["","turq","f",4]],
+    []
+  ];
+  var TILE_STOPS = [[1, 12], [4, 15], [3, 12], [1, 17], [4, 12], [3, 16]];
+  var TILE_NOTE = {
+    none: "The cursor alone — what Panelwright ships with.",
+    pulse: "Pure CSS. A halo that breathes at 2s.",
+    raster: "Scanlines and a mains flicker, inside the one cell.",
+    crosshair: "Static rules and a readout. The only one that never animates.",
+    fire: "Embers cooling as they rise. The one with a knob.",
+    sparkle: "A burst on every arrival, then nothing.",
+    trail: "165 ms of ghost. It marks the jump, briefly.",
+    chad: "Card chads, falling under gravity 0.11.",
+    phosphor: "Four seconds of afterglow. It draws your path.",
+    beam: "A streak with a head, from the old cell to the new."
+  };
+  var TILE_ORDER = ["none", "pulse", "raster", "crosshair", "fire", "sparkle", "trail", "chad", "phosphor", "beam"];
+
+  var tiles = [], magScreens = [];
+  (function () {
+    var host = document.getElementById("fx-gallery");
+    if (!host) return;
+    TILE_ORDER.forEach(function (fx, n) {
+      var card = document.createElement("figure");
+      card.className = "fx-tile";
+      card.innerHTML =
+        '<div class="pw-screen" data-palette="crt-3279" data-rv="tinted">' +
+          '<div class="pw-grid" data-fx="none" data-tint="default" data-hatch="off" data-current-line="off" data-mark-active="on">' +
+            '<div class="pw-rows"></div>' +
+            '<canvas class="pw-fx-canvas"></canvas>' +
+            '<div class="pw-cursor-layer"><div class="pw-cursor">&nbsp;</div></div>' +
+          "</div>" +
+        "</div>" +
+        "<figcaption><b>" + fx + "</b><span>" + TILE_NOTE[fx] + "</span></figcaption>";
+      host.appendChild(card);
+      var screenEl = card.querySelector(".pw-screen");
+      var api = makeScreen(screenEl, { cols: TILE_COLS, rows: TILE, cursorEnabled: true, cursor: TILE_STOPS[0].slice() });
+      var eng = createEngine(api, screenEl);
+      eng.showReadout = false;
+      eng.setEffect(fx);
+      tiles.push({ api: api, eng: eng, idx: 0, phase: n });
+    });
+
+    function advance(t) {
+      var from = [t.api.cursor.row, t.api.cursor.col];
+      t.idx = (t.idx + 1) % TILE_STOPS.length;
+      t.api.cursor.row = TILE_STOPS[t.idx][0];
+      t.api.cursor.col = TILE_STOPS[t.idx][1];
+      t.api.paint();
+      t.eng.notify(from, [t.api.cursor.row, t.api.cursor.col], false);
+    }
+    /* Hovering a tile fires its effect at once — the transient ones are over in
+       under a third of a second, so waiting for the next beat is no way to look
+       at one. */
+    tiles.forEach(function (t) {
+      t.api.grid.addEventListener("mouseenter", function () { advance(t); });
+    });
+    if (!reduceMotion) {
+      /* One timer for the whole grid; each tile advances on its own offset, so
+         the ten are always at different points and never move in lockstep. */
+      var beat = 0;
+      setInterval(function () {
+        beat++;
+        for (var i = 0; i < tiles.length; i++) {
+          if ((beat + tiles[i].phase) % 6 === 0) advance(tiles[i]);
+        }
+      }, 110);
+    }
+  })();
+
+  (function () {
+    var host = document.getElementById("mag-row");
+    if (!host) return;
+    var MAG = [[["  ===> ","green"],["S ","turq","f",2]]];
+    var notes = { none: "The block, and the character under it.", pulse: "A halo, 2 to 5px, breathing at 2s.", raster: "Scanlines every 2px, halation above and below, a 0.14s flicker." };
+    ["none", "pulse", "raster"].forEach(function (fx) {
+      var fig = document.createElement("figure");
+      fig.className = "mag";
+      fig.innerHTML =
+        '<div class="pw-screen" data-palette="crt-3279" data-rv="tinted">' +
+          '<div class="pw-grid" data-fx="' + fx + '" data-tint="default" data-hatch="off" data-current-line="off" data-mark-active="off">' +
+            '<div class="pw-rows"></div>' +
+            '<div class="pw-cursor-layer"><div class="pw-cursor">&nbsp;</div></div>' +
+          "</div></div>" +
+        "<figcaption><b>" + fx + "</b><span>" + notes[fx] + "</span></figcaption>";
+      host.appendChild(fig);
+      var api = makeScreen(fig.querySelector(".pw-screen"), { cols: 9, rows: MAG, cursorEnabled: true, cursor: [0, 7] });
+      magScreens.push(api);
+    });
+  })();
+
+  function resizeAll() {
+    engine.size();
+    engine.draw();
+    tiles.forEach(function (t) { t.eng.size(); t.eng.draw(); });
+  }
+  window.addEventListener("resize", resizeAll);
+
+  function boot() {
+    bench.paint();
+    syncOia();
+    setEffect("fire");
+    resizeAll();
+    tiles.forEach(function (t) { t.eng.readColor(); });
+    startAuto();
+    startTicker();
+  }
+  boot();
+  setTimeout(function () { bench.paint(); resizeAll(); }, 200);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      bench.paint(); logon.paint();
+      tiles.forEach(function (t) { t.api.paint(); });
+      magScreens.forEach(function (m) { m.paint(); });
+      resizeAll();
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+  /* ---------------- TUI panes ----------------
+     Every line is padded from a MEASURED visible length, never hand-counted:
+     one segment added later used to push the right border off by a column. */
+  (function () {
+    var A = { blue: "#5555ff", red: "#ff5555", green: "#55ff55", white: "#ffffff", cyan: "#55ffff", dim: "#7a7a7a" };
+    var B = { blue: "#0087ff", red: "#ff0000", green: "#00d700", white: "#ffffff", cyan: "#00d7d7", dim: "#585858" };
+    var W = 40;
+
+    function seg(t, c, underline) {
+      return { t: t, c: c, u: !!underline };
+    }
+    function render(segs, P) {
+      var vis = 0, out = "";
+      for (var i = 0; i < segs.length; i++) {
+        vis += segs[i].t.length;
+        out += '<span style="color:' + segs[i].c + (segs[i].u ? ";text-decoration:underline" : "") + '">' +
+               boxify(segs[i].t) + "</span>";
+      }
+      return { html: out, vis: vis };
+    }
+    function row(P, segs) {
+      var r = render(segs, P);
+      var fill = Math.max(0, W - r.vis);
+      return '<span style="color:' + P.dim + '">' + boxify("│") + "</span>" + r.html +
+             pad(fill) + '<span style="color:' + P.dim + '">' + boxify("│") + "</span>";
+    }
+    function edge(P, l, r) {
+      return '<span style="color:' + P.dim + '">' + boxify(l + new Array(W + 1).join("─") + r) + "</span>";
+    }
+    function colouredPane(P) {
+      var L = [];
+      L.push(edge(P, "╭", "╮"));
+      L.push(row(P, [seg(" TSO/E LOGON", P.white)]));
+      L.push(row(P, []));
+      L.push(row(P, [seg("  Userid    ===> ", P.green), seg("HERC03  ", P.cyan, true)]));
+      L.push(row(P, [seg("  Password  ===> ", P.green), seg("█", P.white), seg("       ", P.cyan, true)]));
+      L.push(row(P, [seg("  Procedure ===> ", P.green), seg("IKJACCNT", P.cyan, true)]));
+      L.push(row(P, []));
+      L.push(row(P, [seg("  ", P.dim), seg("PF1", P.blue), seg(" Help   ", P.white), seg("PF3", P.blue), seg(" Logoff", P.white)]));
+      L.push(edge(P, "╰", "╯"));
+      L.push('<span style="color:' + P.blue + '"> 4-A</span>' +
+             '<span style="color:' + P.dim + '">   manual   overtype</span>' +
+             pad(9) + '<span style="color:' + P.blue + '">05/018</span>');
+      return L.join("\n");
+    }
+    function plainPane() {
+      var L = [], bar = "+" + new Array(W + 1).join("-") + "+";
+      function pr(t) { return "|" + (t + pad(W)).slice(0, W) + "|"; }
+      L.push(bar);
+      L.push(pr(" TSO/E LOGON"));
+      L.push(pr(""));
+      L.push(pr("  Userid    ===> HERC03"));
+      L.push(pr("  Password  ===> █"));
+      L.push(pr("  Procedure ===> IKJACCNT"));
+      L.push(pr(""));
+      L.push(pr("  PF1 Help   PF3 Logoff"));
+      L.push(bar);
+      L.push(" 4-A   manual   overtype         05/018");
+      return boxify(L.join("\n"));
+    }
+
+    document.getElementById("tui-default").innerHTML = colouredPane(A);
+    document.getElementById("tui-3279").innerHTML = colouredPane(B);
+    document.getElementById("tui-3279").style.background = "#000";
+    document.getElementById("tui-plain").innerHTML = plainPane();
+  })();
+})();
+</script>
+
+</body>
+</html>
