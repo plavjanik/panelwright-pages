@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panelwright compared</title>
+<meta name="description" content="How Panelwright compares with the x3270 family and the commercial host emulators: a feature matrix, what each one is actually for, and where Panelwright is the weaker choice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f5f6f3;--bg2:#eceee9;--ink:#1b1f1c;--ink2:#464c48;--mute:#737a75;--line:#d3d7d1;--agent:#2f8f5b;--human:#c98a1b;--screen:#0c1711;--phos:#7fdc9c;--phos2:#4f9d6c;--shadow:0 1px 2px rgba(20,30,24,.08),0 10px 28px rgba(20,30,24,.07)}
+@media (prefers-color-scheme: dark){:root{--bg:#131614;--bg2:#1a1f1b;--ink:#e6e9e4;--ink2:#b6bcb6;--mute:#8a918b;--line:#2c332e;--agent:#3ea86b;--human:#c4861c;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink2)}
+:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{padding:64px 0 8px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 .9rem}
+.eyebrow a{color:var(--mute)}
+h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;font-size:clamp(2.1rem,4.4vw,3.1rem);letter-spacing:-.02em;line-height:1.1;margin:0;text-wrap:balance}
+h1 em{font-style:italic;font-weight:400;color:var(--agent)}
+.lede{font-size:1.15rem;color:var(--ink2);max-width:64ch;margin:1.1rem 0 0}
+section{padding:46px 0 0}
+h2.sec{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;font-size:1.7rem;margin:0 0 .4rem;letter-spacing:-.01em}
+p.sub{color:var(--ink2);margin:0 0 1.2rem;max-width:72ch}
+p{max-width:72ch}
+.note{background:var(--bg2);border-left:2px solid var(--human);padding:14px 18px;margin:1.6rem 0 0;font-size:.95rem;color:var(--ink2);border-radius:0 4px 4px 0}
+.note strong{color:var(--ink)}
+.fam{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;margin:1.6rem 0 0}
+.card{border-top:2px solid var(--line);padding-top:1rem;display:flex;flex-direction:column;gap:.5rem}
+.card.a{border-top-color:var(--agent)}.card.b{border-top-color:var(--human)}.card.c{border-top-color:var(--ink2)}
+.card .k{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.card h3{font-family:"IBM Plex Serif",Georgia,serif;font-weight:500;font-size:1.28rem;line-height:1.2;margin:0}
+.card p{margin:0;color:var(--ink2);font-size:.95rem}
+.tscroll{overflow-x:auto;margin:1.4rem 0 0;border:1px solid var(--line);border-radius:6px;background:var(--bg2)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.92rem}
+caption{text-align:left;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:12px 14px 0}
+th,td{text-align:left;vertical-align:top;padding:9px 14px;border-bottom:1px solid var(--line)}
+thead th{position:sticky;top:0;background:var(--bg2);font-weight:600;font-size:.8rem;letter-spacing:.02em;border-bottom:2px solid var(--line)}
+tbody tr:last-child td{border-bottom:none}
+th.rowh{font-weight:500;color:var(--ink);width:21%}
+td{color:var(--ink2)}
+td.pw{color:var(--ink)}
+.y{color:var(--agent);font-weight:600}
+.n{color:var(--mute)}
+.p{color:var(--human);font-weight:600}
+code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em;background:var(--bg2);padding:.1em .35em;border-radius:3px}
+.tscroll code{background:transparent;padding:0}
+ul{max-width:72ch;color:var(--ink2)}
+li{margin:.4rem 0}
+li strong{color:var(--ink)}
+.legend{font-size:.86rem;color:var(--mute);margin:.7rem 0 0}
+footer{margin-top:64px;padding:24px 0 56px;border-top:1px solid var(--line);font-size:.86rem;color:var(--mute)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow"><a href="index.html">Panelwright</a> · Comparison</p>
+  <h1>Panelwright, the <em>x3270</em> family, and the commercial emulators</h1>
+  <p class="lede">Three different answers to "drive a 3270 application from a program". They overlap less than the shared protocol suggests: one is a terminal emulator suite with a scripting port, one is a desktop product with a decades-old automation API, and one is built for agents and for handing a live session back and forth with a human.</p>
+</header>
+
+<div class="note">
+  <strong>How to read this.</strong> The Panelwright column is drawn from this repository — its shipped commands, design records and live test evidence — and the same honesty rule applies here as in the project's <a href="https://github.com/plavjanik/panelwright/blob/main/docs/COMPATIBILITY.md">host compatibility matrix</a>: a cell states what has been built and exercised, never what should work. The other two columns are compiled from vendor and project documentation, cited at the foot of the page. Where a vendor's current capability could not be verified from public documentation, the cell says so rather than guessing — commercial emulators are large products and absence of a citation here is not absence of the feature. Corrections are welcome as an issue on the repository.
+</div>
+
+<section>
+  <h2 class="sec">What each one is for</h2>
+  <p class="sub">The honest starting point is that these tools were built for different jobs, and the matrix below is only meaningful once that is clear.</p>
+  <div class="fam">
+    <div class="card a">
+      <div class="k">The reference implementation</div>
+      <h3>The x3270 family</h3>
+      <p>Paul Mattes' BSD-licensed suite: <code>x3270</code> (X11), <code>c3270</code> (curses), <code>wc3270</code> (Windows console), <code>s3270</code>/<code>ws3270</code> (script-only), <code>b3270</code> (a protocol back end speaking XML or JSON to a front end of your choice), <code>tcl3270</code> and the <code>pr3287</code> printer. Thirty years old, in every Linux distribution, and the closest thing the 3270 world has to a specification you can execute.</p>
+    </div>
+    <div class="card b">
+      <div class="k">The desktop products</div>
+      <h3>Emulators with an automation API</h3>
+      <p>IBM Personal Communications, Rocket and OpenText's Reflection and Host Explorer lines, BlueZone and their peers. Licensed desktop software whose automation story descends from HLLAPI — IBM's 1986 interface for reading the presentation space and sending keystrokes — through EHLLAPI and, for PCOMM, the Host Access Class Library for Java, C++, VB and VBScript, plus recorded macros.</p>
+    </div>
+    <div class="card c">
+      <div class="k">This project</div>
+      <h3>Panelwright</h3>
+      <p>Pure TypeScript, modelled on Playwright rather than on <code>expect</code>: a daemon holds the session while a CLI, a terminal UI and a VS Code panel take turns driving it. Built first for an AI agent following a long procedure, and second for the person who has to watch that agent and take the keyboard when a screen needs judgement.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">Getting it and running it</h2>
+  <div class="tscroll">
+  <table>
+    <caption>Availability</caption>
+    <thead><tr><th class="rowh">&nbsp;</th><th>Panelwright</th><th>x3270 family</th><th>Commercial emulators</th></tr></thead>
+    <tbody>
+      <tr><th class="rowh">Licence</th><td class="pw">Not yet published. Builds are attached to a rolling GitHub prerelease as a CLI tarball and a <code>.vsix</code>.</td><td>Open source, BSD. Packaged by the distributions and by Homebrew.</td><td>Commercial, per-seat or per-server.</td></tr>
+      <tr><th class="rowh">Runtime</th><td class="pw">Node. One <code>npm install -g</code> of a self-contained tarball; the VS Code extension vendors its own copy of the CLI.</td><td>Native binaries, no runtime.</td><td>Installed desktop application.</td></tr>
+      <tr><th class="rowh">Platforms</th><td class="pw">Developed and tested on macOS; CI is self-hosted on the same platform. Other platforms are not part of the tested matrix.</td><td class="y">Unix, Linux, Windows, macOS.</td><td>Windows is the centre of gravity for the HLLAPI-descended APIs.</td></tr>
+      <tr><th class="rowh">Headless / server use</th><td class="pw y">The normal case — the daemon has no UI of its own.</td><td class="y"><code>s3270</code> and <code>b3270</code> exist precisely for this.</td><td class="n">Generally tied to a desktop session; server editions are separate products.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">Driving a screen from a program</h2>
+  <p class="sub">This is where the three diverge most. All of them can send keystrokes and read cells back; what differs is how you say <em>which</em> cell, and what happens while you wait.</p>
+  <div class="tscroll">
+  <table>
+    <caption>Automation model</caption>
+    <thead><tr><th class="rowh">&nbsp;</th><th>Panelwright</th><th>x3270 family</th><th>Commercial emulators</th></tr></thead>
+    <tbody>
+      <tr><th class="rowh">Interface</th><td class="pw">One CLI command per action; a TypeScript API; a scripting format for reusable, parameterised commands.</td><td>Actions written to stdin, or over a script port; <code>x3270if</code> for shell use; a JSON dialect since x3270 4.2 (2022); <code>b3270</code>'s XML/JSON stream for building a front end.</td><td>EHLLAPI from C, and HACL objects from Java, C++, VB and VBScript; recorded macros.</td></tr>
+      <tr><th class="rowh">Addressing a field</th><td class="pw y">Locators: <code>after:"Logon ===&gt;"</code>, <code>below:</code>, <code>rightOf:</code>, <code>last</code>, and <code>at:row,col</code> when you want coordinates.</td><td>Row and column, or field index.</td><td>Presentation-space offset, or cursor position.</td></tr>
+      <tr><th class="rowh">Waiting</th><td class="pw y">Automatic on host quiescence after every action, plus explicit <code>wait --text</code>, <code>--last-line</code> and <code>press ENTER --until-gone "***"</code>.</td><td class="y">A rich explicit <code>Wait()</code> — for unlock, for output, for a timeout.</td><td>Wait for the keyboard to unlock; otherwise the script sleeps.</td></tr>
+      <tr><th class="rowh">Session across calls</th><td class="pw y">A daemon holds the connection, screen buffer, cursor and journal; every CLI call, TUI tab and editor panel joins the same live session.</td><td>The emulator process is the session — you keep it alive and keep talking to it.</td><td>The emulator window is the session.</td></tr>
+      <tr><th class="rowh">Output shape</th><td class="pw y">After each action, only what changed, in a compact deterministic form meant to be read by a model rather than scraped.</td><td>Structured status lines, and full screen dumps on request.</td><td>Buffers returned to the calling program.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">The parts built for agents and for handover</h2>
+  <p class="sub">These rows are the reason the project exists, and they are the ones where the comparison is least even — not because the other tools do them badly, but because they were not asked to do them.</p>
+  <div class="tscroll">
+  <table>
+    <caption>Agents, people, and the seam between them</caption>
+    <thead><tr><th class="rowh">&nbsp;</th><th>Panelwright</th><th>x3270 family</th><th>Commercial emulators</th></tr></thead>
+    <tbody>
+      <tr><th class="rowh">Human takes over a live automated session</th><td class="pw y">A person can watch an agent's session, take the keyboard, and hand it back, in the one shared session. Writer leases arbitrate who may transmit.</td><td class="n">Not a feature; a scripted <code>s3270</code> has no operator, and an <code>x3270</code> being driven has no lease model.</td><td class="n">Not a documented feature of the automation APIs.</td></tr>
+      <tr><th class="rowh">Approval before each transmit</th><td class="pw y">Supervised mode holds every transmit for a human decision.</td><td class="n">—</td><td class="n">—</td></tr>
+      <tr><th class="rowh">Secret handling</th><td class="pw y">Passwords never reach the command line, the journal or a wire trace; password-shaped writes are recognised and redacted however they were typed, and secrets resolve from the OS keychain or the environment.</td><td class="n">A password typed by a script is ordinary text in the script and in any trace.</td><td>Varies by product; not a uniform guarantee.</td></tr>
+      <tr><th class="rowh">Turning a manual session into a script</th><td class="pw y">The journal of what was actually done is exported as a runnable script, with redacted writes rewritten as secret references.</td><td class="n">—</td><td class="y">Macro recording is a long-standing strength of these products.</td></tr>
+      <tr><th class="rowh">Packaged for an AI coding agent</th><td class="pw y">A Claude Code skill ships with the CLI; the per-action output is designed for a model's context budget.</td><td class="n">—</td><td class="n">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="sec">Evidence, and the unglamorous parts</h2>
+  <div class="tscroll">
+  <table>
+    <caption>Diagnostics and terminal work</caption>
+    <thead><tr><th class="rowh">&nbsp;</th><th>Panelwright</th><th>x3270 family</th><th>Commercial emulators</th></tr></thead>
+    <tbody>
+      <tr><th class="rowh">Wire trace</th><td class="pw">Decoded into c3270's own vocabulary, credentials scrubbed, replayable against a fake host, and openable as a structured editor view.</td><td class="y">A full trace facility — and the one this project checks itself against.</td><td>Vendor trace tooling, aimed at support cases.</td></tr>
+      <tr><th class="rowh">Hermetic testing</th><td class="pw y">A recorded trace replays as a fake host, so a test needs no mainframe.</td><td class="n">Not a packaged feature.</td><td class="n">Not a packaged feature.</td></tr>
+      <tr><th class="rowh">Screen export</th><td class="pw">SVG and ANSI exports of the live screen.</td><td>Text and HTML dumps.</td><td>Print and capture features.</td></tr>
+      <tr><th class="rowh">Editor integration</th><td class="pw y">A native VS Code panel with a command palette, find-on-screen, trees and file transfer; registers as a Zowe Explorer profile type so a host with only a 3270 port appears in the Zowe trees.</td><td class="n">—</td><td>Some products ship Eclipse or Visual Studio tooling.</td></tr>
+      <tr><th class="rowh">File transfer</th><td class="pw">IND$FILE, DFT mode, from the CLI, the TUI and the editor.</td><td class="y">IND$FILE, both modes.</td><td class="y">IND$FILE, long-established.</td></tr>
+      <tr><th class="rowh">Host code pages</th><td class="pw">124.</td><td class="y">Extensive.</td><td class="y">Extensive, and a traditional strength.</td></tr>
+      <tr><th class="rowh">Maturity</th><td class="n">Weeks old. One real-z/OS field tester, four LPARs' worth of captured evidence, and two published test hosts.</td><td class="y">Thirty years, and the de facto reference.</td><td class="y">Decades in production at scale.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="legend">Green marks a genuine strength of that column, amber a partial answer, grey an absence. An absence is often a deliberate scope decision rather than a gap.</p>
+</section>
+
+<section>
+  <h2 class="sec">Where Panelwright is the wrong choice</h2>
+  <p class="sub">A comparison that only flatters its author is not worth publishing, and these are real.</p>
+  <ul>
+    <li><strong>You need a proven, supported desktop emulator for end users.</strong> That is exactly what the commercial products are, with support contracts, accessibility work, printer sessions and decades of deployment behind them. Panelwright is not a replacement for a trading floor's terminal estate.</li>
+    <li><strong>You want the reference behaviour of the protocol.</strong> Use the x3270 family. This project treats <code>s3270</code> and <code>c3270</code> as its differential oracle: when Panelwright disagrees with them about a host, the working assumption is that Panelwright is wrong, and two real client defects were found and fixed exactly that way.</li>
+    <li><strong>You have an existing HLLAPI estate.</strong> Decades of working EHLLAPI automation is not a thing to rewrite because a newer tool has nicer locators.</li>
+    <li><strong>You need breadth of platform or protocol today.</strong> Panelwright is 3270 only, and its tested platform matrix is narrow. No 5250, no VT.</li>
+    <li><strong>You need it to be maintained by someone other than a very small project.</strong> It is new, and it says so in its own compatibility matrix.</li>
+  </ul>
+</section>
+
+<section>
+  <h2 class="sec">Sources</h2>
+  <ul>
+    <li>x3270 suite components, the scripting facilities, the script port and <code>x3270if</code>: the <a href="https://x3270.bgp.nu/s3270-man.html">s3270 manual page</a> and the <a href="https://manpages.ubuntu.com/manpages/bionic/man1/x3270-script.1.html">x3270-script</a> manual page.</li>
+    <li>JSON as an input dialect, added in x3270 4.2 (2022), and <code>b3270</code>'s XML/JSON front-end protocol: the x3270 wiki's <a href="https://x3270.miraheze.org/wiki/S3270_protocol">s3270 protocol</a> and <a href="https://x3270.miraheze.org/wiki/B3270_protocol">b3270 protocol</a> pages.</li>
+    <li>EHLLAPI's origin as IBM's 1986 extension of HLLAPI, and what it addresses — presentation-space characters, keystrokes, host status and file transfer: <a href="https://en.wikipedia.org/wiki/EHLLAPI">EHLLAPI</a>.</li>
+    <li>IBM Personal Communications' API set — EHLLAPI and the Host Access Class Library for C++, Java, VB and VBScript: <a href="https://www.ibm.com/support/pages/data-collection-personal-communications-ehllapi-or-hacl-application-problems">IBM support documentation</a> and the <a href="https://public.dhe.ibm.com/software/network/pcomm/brochures/3475-07.pdf">product brochure</a>.</li>
+    <li>The Panelwright column: this repository's shipped command set, <a href="https://github.com/plavjanik/panelwright/blob/main/docs/COMPATIBILITY.md">COMPATIBILITY.md</a>, and the differential study against c3270/s3270 that the "wrong choice" section refers to.</li>
+  </ul>
+</section>
+
+<footer>
+  Panelwright is developed at <a href="https://github.com/plavjanik/panelwright">github.com/plavjanik/panelwright</a>. This page compares products that are trademarks of their respective owners; it is written by the author of one of them and should be read with that in mind.
+</footer>
+</div>
+</body>
+</html>
