@@ -163,8 +163,23 @@ footer a{color:var(--ink2)}
 </section>
 
 <section>
+  <h2 class="sec">Where Panelwright is the right choice</h2>
+  <p class="sub">The mirror of the section below it. Each of these is a job the other two were not built for, and the reason this project exists rather than a wrapper around <code>s3270</code>.</p>
+  <ul>
+    <li><strong>An AI agent has to carry out a long procedure on a green screen.</strong> This is the founding case: the first job was letting an agent follow a complicated update procedure on a ZD&amp;T system instead of a person spending unknown days on it. Every action returns a compact, deterministic account of what changed, sized for a model's context rather than for a human reading a full screen dump, and a Claude Code skill ships with the CLI. Nothing else here was designed against that constraint.</li>
+    <li><strong>A person has to supervise that automation, and rescue it.</strong> Long host procedures reach screens that need judgement. A human can watch the agent's live session, take the keyboard, and hand it back without tearing the session down, with writer leases arbitrating who may transmit and supervised mode holding every transmit for approval. This is the row where the matrix above is emptiest for the other two columns.</li>
+    <li><strong>The host has a 3270 port and nothing else.</strong> No z/OSMF, no REST, no API on the roadmap — which is the normal state of a great many applications. Panelwright also registers as a Zowe Explorer profile type, so a host reachable only by terminal still appears in the Zowe trees alongside hosts that have a modern API.</li>
+    <li><strong>You need to prove what happened afterwards.</strong> A decoded wire trace in c3270's vocabulary with credentials scrubbed, a journal of every action, SVG and ANSI exports of the screen, and a privacy-safe diagnostic bundle. For an audited change on a production system, "here is the exact byte stream, and here is what was typed" is a different kind of answer from "the macro completed".</li>
+    <li><strong>Credentials must not end up in a script, a log or a capture.</strong> Passwords never reach the command line, the journal or a wire trace; password-shaped writes are recognised and redacted however they were typed, and secrets resolve from the OS keychain or the environment. A recorded session exports with those writes rewritten as secret references rather than as the password.</li>
+    <li><strong>Someone did it by hand once and it now has to be repeatable.</strong> The journal of what was actually done exports as a runnable, parameterised script — the manual run is the recording, rather than something to be reconstructed from memory afterwards.</li>
+    <li><strong>It has to run in CI, in a container, or on a developer's laptop with no desktop.</strong> The daemon has no UI of its own and there is no per-seat licence to provision for a build agent. A recorded trace also replays as a fake host, so tests that exercise the automation need no mainframe at all.</li>
+    <li><strong>The people doing the work live in VS Code.</strong> A native panel with a command palette, find-on-screen, trees and file transfer, beside the repository the change is going into — rather than a separate emulator window and a copy-paste between them.</li>
+  </ul>
+</section>
+
+<section>
   <h2 class="sec">Where Panelwright is the wrong choice</h2>
-  <p class="sub">A comparison that only flatters its author is not worth publishing, and these are real.</p>
+  <p class="sub">A comparison that only flatters its author is not worth publishing. These are real, and they are the reason the list above is a list of jobs rather than a claim of superiority.</p>
   <ul>
     <li><strong>You need a proven, supported desktop emulator for end users.</strong> That is exactly what the commercial products are, with support contracts, accessibility work, printer sessions and decades of deployment behind them. Panelwright is not a replacement for a trading floor's terminal estate.</li>
     <li><strong>You want the reference behaviour of the protocol.</strong> Use the x3270 family. This project treats <code>s3270</code> and <code>c3270</code> as its differential oracle: when Panelwright disagrees with them about a host, the working assumption is that Panelwright is wrong, and two real client defects were found and fixed exactly that way.</li>
