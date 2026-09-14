@@ -95,6 +95,24 @@ section:first-of-type{border-top:0}
 .scr .a{color:var(--phos-amber)}
 .scr .w{color:#e8efe9}
 .scr .oia{border-top:1px solid #1f3a2b;margin-top:.6em;padding-top:.4em;color:var(--phos2)}
+/* chapter 12: the headline contrast */
+.ledger{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:0;margin:2rem 0 1.8rem;border:1px solid var(--line);background:var(--bg)}
+.led{padding:22px 24px 20px;display:flex;flex-direction:column;gap:.45rem}
+.led+.vs+.led{border-left:1px solid var(--line)}
+.led .k{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mute)}
+.led .v{font-family:"IBM Plex Serif",Georgia,serif;font-size:clamp(2.1rem,5.5vw,3.1rem);line-height:1;font-variant-numeric:tabular-nums;color:var(--agent)}
+.led .v .u{font-size:1.05rem;color:var(--ink2);margin-left:.25rem;font-variant-numeric:normal}
+.led .d{font-size:.88rem;color:var(--mute);line-height:1.45}
+.led.alt .v{color:var(--ink2)}
+.stats.six{grid-template-columns:repeat(3,1fr)}
+@media (max-width:820px){.stats.six{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:460px){.stats.six{grid-template-columns:1fr}}
+.vs{display:grid;place-items:center;padding:0 14px;font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-left:1px solid var(--line);background:var(--bg2)}
+@media (max-width:720px){
+  .ledger{grid-template-columns:1fr}
+  .led+.vs+.led{border-left:0;border-top:1px solid var(--line)}
+  .vs{border-left:0;border-top:1px solid var(--line);padding:8px 14px}
+}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 figure{margin:1.6rem 0}
 figure img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:var(--shadow)}
@@ -387,6 +405,29 @@ $ panelwright press ENTER</span>
   <p class="eyebrow"><b>12</b> · Counted 2026-09-14</p>
   <h2>The month, counted</h2>
   <p class="lede">Every figure below is a count taken from the repository and from 202 session transcripts, except the hours and the money, which are estimates with their method stated.</p>
+
+  <div class="ledger">
+    <div class="led">
+      <div class="k">What it took</div>
+      <div class="v">40<span class="u">hours</span></div>
+      <div class="d">of one person&rsquo;s attention, spread across 40 calendar days &mdash; plus a subscription shared with other work</div>
+    </div>
+    <div class="vs">instead of</div>
+    <div class="led alt">
+      <div class="k">What it would have taken</div>
+      <div class="v">2&ndash;4<span class="u">person-years</span></div>
+      <div class="d">to hand-build a smaller equivalent library &mdash; &euro;200,000 to &euro;400,000, arriving 18 to 30 months later</div>
+    </div>
+  </div>
+
+  <div class="stats six" aria-label="The month in figures">
+    <div class="stat"><div class="v">310,000</div><div class="l">lines of product and test code</div></div>
+    <div class="stat"><div class="v">1.10<span style="font-size:1rem;color:var(--mute)"> : 1</span></div><div class="l">test code to product code</div></div>
+    <div class="stat"><div class="v">599</div><div class="l">distinct messages, each explained</div></div>
+    <div class="stat"><div class="v">72,418</div><div class="l">lines of human-facing documentation</div></div>
+    <div class="stat"><div class="v">2,128</div><div class="l">messages from one person, 202 sessions</div></div>
+    <div class="stat"><div class="v">13.2<span style="font-size:1rem;color:var(--mute)"> bn</span></div><div class="l">tokens, about $10,250 at list price</div></div>
+  </div>
 
   <div class="tbl">
   <table>
