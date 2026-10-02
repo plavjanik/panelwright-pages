@@ -1,4 +1,4 @@
-import{c as Es,j as As}from"./skins-C2-B1914.js";import{s as $s,R as Os,D as Ts}from"./DemoApp-DC98nmFh.js";import{e as P,D as Is,a as Ss,b as Ms,c as Ns,d as Rs}from"./config-D-Xm4TgH.js";const e={ansi:{"vitest-1-regression":`
+import{c as Es,j as As}from"./skins-C2-B1914.js";import{s as $s,R as Os,D as Ts}from"./DemoApp-DVEcaIxE.js";import{e as P,D as Is,a as Ss,b as Ms,c as Ns,d as Rs}from"./config-D-Xm4TgH.js";const e={ansi:{"vitest-1-regression":`
  RUN  v4.1.11 /work/demo-atm-limit
 
  ✓ test/atm.regression.test.ts > existing behaviour > shows the account balance 7ms
