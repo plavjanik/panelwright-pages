@@ -177,16 +177,16 @@ footer{padding:40px 0 60px;border-top:1px solid var(--line);font-size:.84rem;col
 <main>
 
 <section class="hero" id="top">
-  <p class="eyebrow"><a href="index.html" style="text-decoration:none">Panelwright</a> · Development record · 2026-08-06 to 2026-09-14 · prepared for a management briefing</p>
+  <p class="eyebrow"><a href="index.html" style="text-decoration:none">Panelwright</a> · Development record · 2026-08-06 to 2026-10-29 · story told to 2026-09-14, key figures refreshed 2026-10-29 · prepared for a management briefing</p>
   <h1>The Making of <em>Panelwright</em></h1>
-  <p class="lede">Panelwright is "Playwright for the IBM 3270 terminal": a pure-TypeScript tool that lets people and AI agents drive mainframe green-screen applications. It was built in five weeks by one engineer working with Claude as a full-time pair, with two colleagues joining for real work. This page tells how, in the order it happened, with the numbers and the mistakes left in.</p>
+  <p class="lede">Panelwright is "Playwright for the IBM 3270 terminal": a pure-TypeScript tool that lets people and AI agents drive mainframe green-screen applications. It was built over twelve weeks by one engineer (the story below follows the first five) working with Claude as a full-time pair, with two colleagues joining for real work. This page tells how, in the order it happened, with the numbers and the mistakes left in.</p>
   <div class="stats eight" aria-label="Key figures">
-    <div class="stat"><div class="v">40</div><div class="l">calendar days, first commit to today</div></div>
-    <div class="stat"><div class="v">40<span style="font-size:1rem;color:var(--mute)"> h</span></div><div class="l">of one person's attention, the whole month</div></div>
-    <div class="stat"><div class="v">932<span style="font-size:1rem;color:var(--mute)"> / 950</span></div><div class="l">commits carry Claude as co-author</div></div>
-    <div class="stat"><div class="v">296</div><div class="l">tickets shipped or closed with a note</div></div>
-    <div class="stat"><div class="v">$10,250</div><div class="l">of model usage at list price; the subscription it really ran on costs $100&ndash;200</div></div>
-    <div class="stat"><div class="v">8,270</div><div class="l">automated tests; more test code than product code</div></div>
+    <div class="stat"><div class="v">85</div><div class="l">calendar days, first commit to 2026-10-29</div></div>
+    <div class="stat"><div class="v">40<span style="font-size:1rem;color:var(--mute)"> h</span></div><div class="l">of one person's attention in the first 40 days (measured to 2026-09-14)</div></div>
+    <div class="stat"><div class="v">1,118<span style="font-size:1rem;color:var(--mute)"> / 1,136</span></div><div class="l">commits carry Claude as co-author</div></div>
+    <div class="stat"><div class="v">425</div><div class="l">tickets shipped or closed with a note</div></div>
+    <div class="stat"><div class="v">$10,250</div><div class="l">of model usage at list price for the first 40 days (to 2026-09-14); the subscription it really ran on costs $100&ndash;200</div></div>
+    <div class="stat"><div class="v">9,563</div><div class="l">automated tests; more test code than product code</div></div>
     <div class="stat"><div class="v">4</div><div class="l">kinds of host it is validated on, from a fake to real z/OS</div></div>
     <div class="stat"><div class="v">3</div><div class="l">surfaces: CLI for agents, terminal UI, VS Code</div></div>
   </div>
@@ -409,15 +409,16 @@ $ panelwright press ENTER</span>
 
 <section id="census">
   <div class="col">
-  <p class="eyebrow"><b>12</b> · Counted 2026-09-14</p>
+  <p class="eyebrow"><b>12</b> · Counted 2026-10-29 (hours, tokens and dollars: 2026-09-14)</p>
   <h2>The month, counted</h2>
-  <p class="lede">Every figure below is a count taken from the repository and from 202 session transcripts, except the hours and the money, which are estimates with their method stated.</p>
+  <p class="lede">Every figure below is a count taken from the repository as of 2026-10-29, except the hours, messages sent and tokens, which come from 202 session transcripts counted on 2026-09-14, and the money, which is an estimate with its method stated.</p>
+  <p class="small"><i>Refreshed 2026-10-29: the repository counts (lines, tests, messages, commits, tickets) were re-measured at that date. Hours, messages sent, tokens and dollars were not: Claude Code has since pruned those early transcripts (14 remain, starting 2026-09-24), so they stay as of 2026-09-14 and cover the first 40 days only.</i></p>
 
   <div class="ledger">
     <div class="led">
       <div class="k">What it took</div>
       <div class="v">40<span class="u">hours</span></div>
-      <div class="d">of one person&rsquo;s attention, spread across 40 calendar days &mdash; plus a subscription shared with other work</div>
+      <div class="d">of one person&rsquo;s attention, spread across the first 40 calendar days (to 2026-09-14) &mdash; plus a subscription shared with other work</div>
     </div>
     <div class="vs">instead of</div>
     <div class="led alt">
@@ -428,12 +429,12 @@ $ panelwright press ENTER</span>
   </div>
 
   <div class="stats six" aria-label="The month in figures">
-    <div class="stat"><div class="v">310,000</div><div class="l">lines of product and test code</div></div>
-    <div class="stat"><div class="v">1.10<span style="font-size:1rem;color:var(--mute)"> : 1</span></div><div class="l">test code to product code</div></div>
-    <div class="stat"><div class="v">599</div><div class="l">distinct messages, each explained</div></div>
-    <div class="stat"><div class="v">72,418</div><div class="l">lines of human-facing documentation</div></div>
-    <div class="stat"><div class="v">2,128</div><div class="l">messages from one person, 202 sessions</div></div>
-    <div class="stat"><div class="v">13.2<span style="font-size:1rem;color:var(--mute)"> bn</span></div><div class="l">tokens, about $10,250 at list price</div></div>
+    <div class="stat"><div class="v">347,000</div><div class="l">lines of product and test code</div></div>
+    <div class="stat"><div class="v">1.12<span style="font-size:1rem;color:var(--mute)"> : 1</span></div><div class="l">test code to product code</div></div>
+    <div class="stat"><div class="v">637</div><div class="l">distinct messages, each explained</div></div>
+    <div class="stat"><div class="v">75,921</div><div class="l">lines of human-facing documentation</div></div>
+    <div class="stat"><div class="v">2,128</div><div class="l">messages from one person, 202 sessions (to 2026-09-14)</div></div>
+    <div class="stat"><div class="v">13.2<span style="font-size:1rem;color:var(--mute)"> bn</span></div><div class="l">tokens, about $10,250 at list price (to 2026-09-14)</div></div>
   </div>
 
   <div class="tbl">
@@ -441,19 +442,19 @@ $ panelwright press ENTER</span>
     <caption class="vh">What the repository contains</caption>
     <thead><tr><th>What</th><th class="num">Files</th><th class="num">Lines</th></tr></thead>
     <tbody>
-      <tr><td>Test source</td><td class="num">656</td><td class="num">162,401</td></tr>
-      <tr><td>Product source</td><td class="num">588</td><td class="num">147,127</td></tr>
-      <tr><td>Human-facing documentation</td><td class="num">158</td><td class="num">72,418</td></tr>
-      <tr><td>Captured fixtures and wire traces</td><td class="num">130</td><td class="num">63,633</td></tr>
-      <tr><td>Tooling and release scripts</td><td class="num">92</td><td class="num">20,515</td></tr>
-      <tr><td>CLI help text</td><td class="num">32</td><td class="num">3,952</td></tr>
+      <tr><td>Test source</td><td class="num">757</td><td class="num">183,856</td></tr>
+      <tr><td>Product source</td><td class="num">665</td><td class="num">163,459</td></tr>
+      <tr><td>Human-facing documentation</td><td class="num">138</td><td class="num">75,921</td></tr>
+      <tr><td>Captured fixtures and wire traces</td><td class="num">137</td><td class="num">63,762</td></tr>
+      <tr><td>Tooling and release scripts</td><td class="num">104</td><td class="num">22,387</td></tr>
+      <tr><td>CLI help text</td><td class="num">33</td><td class="num">4,175</td></tr>
     </tbody>
   </table>
   </div>
 
-  <p>There is <b>more test code than product code</b> &mdash; 1.10 to 1. The 8,270 executed tests come from 7,469 declared cases across 652 files, carrying 16,820 assertions, and they run in six automated kinds: hermetic unit tests, captured host traces replayed through the real parser, a TN3270E server that reimplements the framing so a client bug cannot hide inside its own test double, daemon end-to-end over real sockets, CLI end-to-end against the built binary, and VS Code UI tests driving a real webview. Three more kinds &mdash; a real terminal, live mainframes, and an agent-evaluation harness &mdash; are run by hand.</p>
+  <p>There is <b>more test code than product code</b> &mdash; 1.12 to 1. The 9,563 executed tests (3 more are skipped) come from 8,495 declared cases across 757 files, carrying 19,818 assertions, and they run in six automated kinds: hermetic unit tests, captured host traces replayed through the real parser, a TN3270E server that reimplements the framing so a client bug cannot hide inside its own test double, daemon end-to-end over real sockets, CLI end-to-end against the built binary, and VS Code UI tests driving a real webview. Three more kinds &mdash; a real terminal, live mainframes, and an agent-evaluation harness &mdash; are run by hand.</p>
 
-  <p>The product can print <b>599 distinct messages</b> &mdash; 354 errors, 122 warnings, 123 informational &mdash; each with its text, why it happens and what to do about it. That catalog renders to a 187-page reference now attached to every release.</p>
+  <p>The product can print <b>637 distinct messages</b> &mdash; 374 errors, 130 warnings, 133 informational &mdash; each with its text, why it happens and what to do about it. That catalog renders to a printable reference attached to every release.</p>
 
   <h3>What it took, and what it would have taken</h3>
 
@@ -461,7 +462,7 @@ $ panelwright press ENTER</span>
 
   <p>The model side ran 44,545 turns for <b>13.2 billion tokens</b>, 98% of them context re-read on every turn. At Anthropic list prices that month would bill about <b>$10,250</b>; it actually ran on a subscription costing a hundred or two hundred dollars, shared with other work.</p>
 
-  <div class="note"><b>The counterfactual, stated carefully.</b> Written by hand at 300 delivered lines per working day &mdash; already generous with modern completion tooling &mdash; the same 310,000 lines of code is about 4.7 person-years. But nobody would write 310,000 lines to solve this problem. A person would build a working 3270 library with decent tests, adequate documentation, a CLI and an extension, and that is a <b>two to four person-year product</b>: roughly &euro;200,000 to &euro;400,000 at a &euro;100k loaded rate, arriving eighteen to thirty months later. The honest claim is not a speed multiplier. It is that <b>thoroughness stopped being the thing you trade away to ship</b> &mdash; the tests, the 599 explained messages and the design records are the part a deadline usually takes first.</div>
+  <div class="note"><b>The counterfactual, stated carefully.</b> Written by hand at 300 delivered lines per working day &mdash; already generous with modern completion tooling &mdash; the same 347,000 lines of code is about 5.3 person-years. But nobody would write 347,000 lines to solve this problem. A person would build a working 3270 library with decent tests, adequate documentation, a CLI and an extension, and that is a <b>two to four person-year product</b>: roughly &euro;200,000 to &euro;400,000 at a &euro;100k loaded rate, arriving eighteen to thirty months later. The honest claim is not a speed multiplier. It is that <b>thoroughness stopped being the thing you trade away to ship</b> &mdash; the tests, the 637 explained messages and the design records are the part a deadline usually takes first.</div>
   </div>
 </section>
 
@@ -494,7 +495,7 @@ $ panelwright press ENTER</span>
   </div>
   <div class="col">
   <p><b>Speed came from the loop, not from typing faster.</b> The eleven-fixes-in-a-day episodes were possible because research, decision, implementation, test and record were one conversation. The cost of that speed was a new failure mode: confident, well-formatted findings that were wrong. The project's answer was procedural, not technological. Verify against the artifact, every time.</p>
-  <p><b>The human's job moved up, not away.</b> Of 856 commits, 844 carry Claude as co-author. Petr decided, looked, used the tool for real work, and said what he saw. The tool exists because someone could say "it flickers".</p>
+  <p><b>The human's job moved up, not away.</b> Of 1,136 commits, 1,118 carry Claude as co-author. Petr decided, looked, used the tool for real work, and said what he saw. The tool exists because someone could say "it flickers".</p>
   <p><b>An AI-friendly tool is a human-friendly tool with a journal.</b> Compact output, actionable errors, a watchable session and a way to hand control back turned out to be what both audiences needed. The scored evaluation's finding that a one-page cheat sheet lets the cheapest model match the frontier is the same finding as "write the docs".</p>
   </div>
   </div>
